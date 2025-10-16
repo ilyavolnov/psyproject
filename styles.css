@@ -2917,7 +2917,7 @@ lists-load-more {
 }
 
 .status-available {
-    background: #4CAF50;
+    background: var(--color-blue);
     color: var(--color-white);
 }
 
