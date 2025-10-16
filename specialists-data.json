@@ -1,0 +1,427 @@
+{
+  "specialists": [
+    {
+      "id": 1,
+      "name": "Анастасия",
+      "role": "Врач-психиатр, психотерапевт",
+      "specializations": ["Диагностика", "Фармакотерапия"],
+      "experience": 17,
+      "price": 6500,
+      "photo": "images/hero-page.webp",
+      "status": "available",
+      "description": "Врач-психиатр с 17-летним опытом работы. Специализируется на диагностике психических расстройств и подборе фармакотерапии. Работаю с депрессией, тревожными расстройствами, биполярным расстройством.",
+      "education": ["МГУ им. Ломоносова, факультет психологии", "Ординатура по психиатрии"],
+      "approaches": ["Когнитивно-поведенческая терапия", "Фармакотерапия", "Интегративный подход"]
+    },
+    {
+      "id": 2,
+      "name": "Мария",
+      "role": "Психолог, сексолог",
+      "specializations": ["Сексология", "Отношения"],
+      "experience": 12,
+      "price": 5500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 3,
+      "name": "Елена",
+      "role": "Психотерапевт",
+      "specializations": ["РПП", "Травма"],
+      "experience": 15,
+      "price": 7000,
+      "photo": "images/hero-page.webp",
+      "status": "full"
+    },
+    {
+      "id": 4,
+      "name": "Ольга",
+      "role": "Детский психолог",
+      "specializations": ["Детская психология", "Семья"],
+      "experience": 10,
+      "price": 6000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 5,
+      "name": "Дмитрий",
+      "role": "Психотерапевт, коуч",
+      "specializations": ["Карьера", "Самореализация"],
+      "experience": 8,
+      "price": 5000,
+      "photo": "images/hero-page.webp",
+      "status": "waiting"
+    },
+    {
+      "id": 6,
+      "name": "Светлана",
+      "role": "Психолог, арт-терапевт",
+      "specializations": ["Арт-терапия", "Тревога"],
+      "experience": 14,
+      "price": 6500,
+      "photo": "images/hero-page.webp",
+      "status": "full"
+    },
+    {
+      "id": 7,
+      "name": "Виктория",
+      "role": "Психотерапевт",
+      "specializations": ["Расставания", "Личностный рост"],
+      "experience": 11,
+      "price": 6000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 8,
+      "name": "Александр",
+      "role": "Психолог, гештальт-терапевт",
+      "specializations": ["Гештальт", "Зависимости"],
+      "experience": 13,
+      "price": 7500,
+      "photo": "images/hero-page.webp",
+      "status": "waiting"
+    },
+    {
+      "id": 9,
+      "name": "Наталья",
+      "role": "Семейный психолог",
+      "specializations": ["Семейная терапия", "Кризис в паре"],
+      "experience": 16,
+      "price": 8000,
+      "photo": "images/hero-page.webp",
+      "status": "full"
+    },
+    {
+      "id": 10,
+      "name": "Екатерина",
+      "role": "Психотерапевт",
+      "specializations": ["Депрессия", "Тревожность"],
+      "experience": 9,
+      "price": 5500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 11,
+      "name": "Игорь",
+      "role": "Психолог",
+      "specializations": ["Стресс", "Выгорание"],
+      "experience": 7,
+      "price": 5000,
+      "photo": "images/hero-page.webp",
+      "status": "waiting"
+    },
+    {
+      "id": 12,
+      "name": "Юлия",
+      "role": "Психотерапевт, сексолог",
+      "specializations": ["Сексуальность", "Интимность"],
+      "experience": 12,
+      "price": 7000,
+      "photo": "images/hero-page.webp",
+      "status": "full"
+    },
+    {
+      "id": 13,
+      "name": "Андрей",
+      "role": "Психолог",
+      "specializations": ["Самооценка", "Уверенность"],
+      "experience": 6,
+      "price": 4500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 14,
+      "name": "Татьяна",
+      "role": "Детский психолог",
+      "specializations": ["Подростки", "Школьные проблемы"],
+      "experience": 11,
+      "price": 6000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 15,
+      "name": "Сергей",
+      "role": "Психотерапевт",
+      "specializations": ["Панические атаки", "Фобии"],
+      "experience": 14,
+      "price": 7000,
+      "photo": "images/hero-page.webp",
+      "status": "waiting"
+    },
+    {
+      "id": 16,
+      "name": "Ирина",
+      "role": "Психолог",
+      "specializations": ["Горе", "Утрата"],
+      "experience": 10,
+      "price": 6000,
+      "photo": "images/hero-page.webp",
+      "status": "full"
+    },
+    {
+      "id": 17,
+      "name": "Максим",
+      "role": "Психотерапевт, коуч",
+      "specializations": ["Лидерство", "Бизнес-коучинг"],
+      "experience": 8,
+      "price": 8000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 18,
+      "name": "Алина",
+      "role": "Психолог",
+      "specializations": ["Границы", "Созависимость"],
+      "experience": 9,
+      "price": 5500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 19,
+      "name": "Павел",
+      "role": "Психотерапевт",
+      "specializations": ["Агрессия", "Гнев"],
+      "experience": 12,
+      "price": 6500,
+      "photo": "images/hero-page.webp",
+      "status": "waiting"
+    },
+    {
+      "id": 20,
+      "name": "Дарья",
+      "role": "Психолог, арт-терапевт",
+      "specializations": ["Творчество", "Самовыражение"],
+      "experience": 7,
+      "price": 5000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 21,
+      "name": "Владимир",
+      "role": "Психотерапевт",
+      "specializations": ["ОКР", "Навязчивости"],
+      "experience": 15,
+      "price": 7500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 22,
+      "name": "Кристина",
+      "role": "Психолог",
+      "specializations": ["Перфекционизм", "Прокрастинация"],
+      "experience": 6,
+      "price": 4500,
+      "photo": "images/hero-page.webp",
+      "status": "waiting"
+    },
+    {
+      "id": 23,
+      "name": "Роман",
+      "role": "Семейный психолог",
+      "specializations": ["Конфликты", "Коммуникация"],
+      "experience": 13,
+      "price": 7000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 24,
+      "name": "Валерия",
+      "role": "Психотерапевт",
+      "specializations": ["Самоповреждение", "Суицидальность"],
+      "experience": 11,
+      "price": 6500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 25,
+      "name": "Артем",
+      "role": "Психолог",
+      "specializations": ["Мужская психология", "Отцовство"],
+      "experience": 8,
+      "price": 5500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 26,
+      "name": "Полина",
+      "role": "Психотерапевт",
+      "specializations": ["Женская психология", "Материнство"],
+      "experience": 10,
+      "price": 6000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 27,
+      "name": "Денис",
+      "role": "Психолог, коуч",
+      "specializations": ["Целеполагание", "Мотивация"],
+      "experience": 7,
+      "price": 5000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 28,
+      "name": "Анна",
+      "role": "Психотерапевт",
+      "specializations": ["Биполярное расстройство", "Аффекты"],
+      "experience": 14,
+      "price": 7500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 29,
+      "name": "Константин",
+      "role": "Психолог",
+      "specializations": ["Социофобия", "Одиночество"],
+      "experience": 9,
+      "price": 5500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 30,
+      "name": "Марина",
+      "role": "Детский психолог",
+      "specializations": ["СДВГ", "Гиперактивность"],
+      "experience": 12,
+      "price": 6500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 31,
+      "name": "Олег",
+      "role": "Психотерапевт",
+      "specializations": ["Алкоголизм", "Химические зависимости"],
+      "experience": 16,
+      "price": 8000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 32,
+      "name": "Вероника",
+      "role": "Психолог",
+      "specializations": ["Нарциссизм", "Токсичные отношения"],
+      "experience": 8,
+      "price": 5500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 33,
+      "name": "Евгений",
+      "role": "Психотерапевт",
+      "specializations": ["ПТСР", "Военная травма"],
+      "experience": 13,
+      "price": 7000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 34,
+      "name": "Лариса",
+      "role": "Психолог",
+      "specializations": ["Возрастные кризисы", "Старение"],
+      "experience": 15,
+      "price": 6000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 35,
+      "name": "Николай",
+      "role": "Семейный психолог",
+      "specializations": ["Развод", "Раздел детей"],
+      "experience": 11,
+      "price": 7500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 36,
+      "name": "София",
+      "role": "Психотерапевт",
+      "specializations": ["Шизофрения", "Психозы"],
+      "experience": 17,
+      "price": 8500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 37,
+      "name": "Тимур",
+      "role": "Психолог",
+      "specializations": ["Игровая зависимость", "Интернет-зависимость"],
+      "experience": 6,
+      "price": 5000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 38,
+      "name": "Людмила",
+      "role": "Психотерапевт",
+      "specializations": ["Хроническая боль", "Психосоматика"],
+      "experience": 14,
+      "price": 7000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 39,
+      "name": "Глеб",
+      "role": "Психолог, коуч",
+      "specializations": ["Спортивная психология", "Достижения"],
+      "experience": 9,
+      "price": 6000,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 40,
+      "name": "Алиса",
+      "role": "Психотерапевт",
+      "specializations": ["Расстройства личности", "Пограничное состояние"],
+      "experience": 12,
+      "price": 7500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 41,
+      "name": "Станислав",
+      "role": "Психолог",
+      "specializations": ["ЛГБТ+", "Гендерная идентичность"],
+      "experience": 7,
+      "price": 5500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    },
+    {
+      "id": 42,
+      "name": "Яна",
+      "role": "Психотерапевт",
+      "specializations": ["Эмоциональное выгорание", "Баланс жизни"],
+      "experience": 10,
+      "price": 6500,
+      "photo": "images/hero-page.webp",
+      "status": "available"
+    }
+  ]
+}

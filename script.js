@@ -89,24 +89,24 @@ function initCourseHoverEffect() {
             item.addEventListener('mouseenter', (e) => {
                 const imageUrl = item.getAttribute('data-image');
                 const description = item.getAttribute('data-description');
-                
+
                 if (imageUrl && description) {
                     hoverImageElement.src = imageUrl;
                     hoverDescription.textContent = description;
                     hoverCard.classList.add('active');
                 }
             });
-            
+
             item.addEventListener('mousemove', (e) => {
                 if (hoverCard.classList.contains('active')) {
                     const offsetX = 30;
                     const offsetY = -hoverCard.offsetHeight / 2;
-                    
+
                     hoverCard.style.left = (e.clientX + offsetX) + 'px';
                     hoverCard.style.top = (e.clientY + offsetY) + 'px';
                 }
             });
-            
+
             item.addEventListener('mouseleave', () => {
                 hoverCard.classList.remove('active');
             });
@@ -120,7 +120,7 @@ initCourseHoverEffect();
 // Scroll animations with GSAP
 if (typeof gsap !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
-    
+
     // Animate course/webinar items on scroll
     gsap.utils.toArray('.course-item').forEach((item, index) => {
         gsap.from(item, {
@@ -131,12 +131,12 @@ if (typeof gsap !== 'undefined') {
             },
             opacity: 0,
             y: 50,
-            duration: 0.8,
+            duration: 0.5,
             ease: 'power3.out',
-            delay: index * 0.05
+            delay: index * 0.02
         });
     });
-    
+
     // Animate section titles
     gsap.utils.toArray('.section-title').forEach(title => {
         gsap.from(title, {
@@ -151,7 +151,7 @@ if (typeof gsap !== 'undefined') {
             ease: 'power3.out'
         });
     });
-    
+
     // Animate subtitles
     gsap.utils.toArray('.courses-subtitle').forEach(subtitle => {
         gsap.from(subtitle, {
@@ -167,7 +167,7 @@ if (typeof gsap !== 'undefined') {
             ease: 'power3.out'
         });
     });
-    
+
     // Parallax effect for team section
     const teamSection = document.querySelector('.team-section');
     if (teamSection) {
@@ -178,11 +178,11 @@ if (typeof gsap !== 'undefined') {
                 end: 'bottom top',
                 scrub: 1
             },
-            y: -50,
+            y: -100,
             ease: 'none'
         });
     }
-    
+
     // Parallax effect for supervision background image
     const supervisionBgImage = document.querySelector('.supervision-bg-image');
     if (supervisionBgImage) {
@@ -194,11 +194,10 @@ if (typeof gsap !== 'undefined') {
                 scrub: 1.5
             },
             y: -100,
-            rotation: 5,
             ease: 'none'
         });
     }
-    
+
     // Animate team specializations
     gsap.utils.toArray('.spec-item').forEach((item, index) => {
         gsap.from(item, {
@@ -214,7 +213,7 @@ if (typeof gsap !== 'undefined') {
             ease: 'power2.out'
         });
     });
-    
+
     // Animate hero stats with scale effect
     gsap.utils.toArray('.stat-card').forEach(card => {
         gsap.from(card, {
@@ -229,7 +228,7 @@ if (typeof gsap !== 'undefined') {
             ease: 'back.out(1.7)'
         });
     });
-    
+
     // Smooth reveal for credentials card
     const credentialsCard = document.querySelector('.hero-credentials');
     if (credentialsCard) {
@@ -281,11 +280,13 @@ document.querySelectorAll('.spec-item').forEach(item => {
     item.addEventListener('mouseenter', () => {
         cursorVisible = true;
         cursor.classList.add('active');
+        item.style.cursor = 'pointer';
     });
 
     item.addEventListener('mouseleave', () => {
         cursorVisible = false;
         cursor.classList.remove('active');
+        item.style.cursor = 'default';
     });
 
     item.addEventListener('mousemove', (e) => {
@@ -294,86 +295,122 @@ document.querySelectorAll('.spec-item').forEach(item => {
             cursor.style.top = e.clientY + 'px';
         }
     });
+
+    item.addEventListener('click', () => {
+        window.location.href = 'specialists.html';
+    });
 });
 
 // Cursor glow effect
 const cursorGlow = document.querySelector('.cursor-glow');
 const heroSection = document.querySelector('.hero');
 
-document.addEventListener('mousemove', (e) => {
-    const heroRect = heroSection.getBoundingClientRect();
-    
-    // Check if cursor is within hero section
-    if (e.clientY >= heroRect.top && e.clientY <= heroRect.bottom) {
-        cursorGlow.style.opacity = '1';
-        cursorGlow.style.left = e.clientX + 'px';
-        cursorGlow.style.top = e.clientY + 'px';
-    } else {
+if (cursorGlow && heroSection) {
+    document.addEventListener('mousemove', (e) => {
+        const heroRect = heroSection.getBoundingClientRect();
+
+        // Check if cursor is within hero section
+        if (e.clientY >= heroRect.top && e.clientY <= heroRect.bottom) {
+            cursorGlow.style.opacity = '1';
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+        } else {
+            cursorGlow.style.opacity = '0';
+        }
+    });
+
+    heroSection.addEventListener('mouseleave', () => {
         cursorGlow.style.opacity = '0';
-    }
-});
-
-heroSection.addEventListener('mouseleave', () => {
-    cursorGlow.style.opacity = '0';
-});
+    });
+}
 
 
 
 
-// Testimonials carousel
+// Testimonials carousel - infinite loop
 const testimonialsCarousel = document.querySelector('.testimonials-carousel');
 const prevBtn = document.querySelector('.testimonial-prev');
 const nextBtn = document.querySelector('.testimonial-next');
 
 if (testimonialsCarousel && prevBtn && nextBtn) {
-    let currentIndex = 0;
     const cards = document.querySelectorAll('.testimonial-card');
     const cardWidth = 430; // 400px + 30px gap
-    const maxIndex = cards.length - 2; // Show 2 cards at a time
     
-    function updateCarousel() {
+    // Clone cards for infinite loop
+    cards.forEach(card => {
+        const clone = card.cloneNode(true);
+        testimonialsCarousel.appendChild(clone);
+    });
+    
+    let currentIndex = 0;
+    let isTransitioning = false;
+
+    function updateCarousel(smooth = true) {
+        if (smooth) {
+            testimonialsCarousel.style.transition = 'transform 0.5s ease';
+        } else {
+            testimonialsCarousel.style.transition = 'none';
+        }
         const offset = currentIndex * cardWidth;
         testimonialsCarousel.style.transform = `translateX(-${offset}px)`;
     }
-    
-    nextBtn.addEventListener('click', () => {
-        if (currentIndex < maxIndex) {
-            currentIndex++;
-            updateCarousel();
+
+    function nextSlide() {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        currentIndex++;
+        updateCarousel();
+        
+        // Reset to beginning when reaching cloned cards
+        if (currentIndex >= cards.length) {
+            setTimeout(() => {
+                currentIndex = 0;
+                updateCarousel(false);
+                isTransitioning = false;
+            }, 500);
+        } else {
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 500);
         }
-    });
-    
-    prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) {
+    }
+
+    function prevSlide() {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        
+        if (currentIndex === 0) {
+            currentIndex = cards.length;
+            updateCarousel(false);
+            setTimeout(() => {
+                currentIndex--;
+                updateCarousel();
+                setTimeout(() => {
+                    isTransitioning = false;
+                }, 500);
+            }, 20);
+        } else {
             currentIndex--;
             updateCarousel();
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 500);
         }
-    });
-    
+    }
+
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+
     // Auto-scroll
-    let autoScrollInterval = setInterval(() => {
-        if (currentIndex < maxIndex) {
-            currentIndex++;
-        } else {
-            currentIndex = 0;
-        }
-        updateCarousel();
-    }, 5000);
-    
+    let autoScrollInterval = setInterval(nextSlide, 5000);
+
     // Pause auto-scroll on hover
     testimonialsCarousel.addEventListener('mouseenter', () => {
         clearInterval(autoScrollInterval);
     });
-    
+
     testimonialsCarousel.addEventListener('mouseleave', () => {
-        autoScrollInterval = setInterval(() => {
-            if (currentIndex < maxIndex) {
-                currentIndex++;
-            } else {
-                currentIndex = 0;
-            }
-            updateCarousel();
-        }, 5000);
+        autoScrollInterval = setInterval(nextSlide, 5000);
     });
 }
 
@@ -383,17 +420,17 @@ const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
+
         // Get form data
         const formData = new FormData(contactForm);
         const data = Object.fromEntries(formData);
-        
+
         // Here you would normally send data to your backend
         console.log('Form submitted:', data);
-        
+
         // Show success message
         alert('Спасибо за вашу заявку! Мы свяжемся с вами в ближайшее время.');
-        
+
         // Reset form
         contactForm.reset();
     });
@@ -412,9 +449,7 @@ if (formCloud && typeof gsap !== 'undefined') {
             end: 'bottom top',
             scrub: 2
         },
-        y: -80,
-        x: 30,
-        rotation: 5,
+        y: -120,
         ease: 'none'
     });
 }
@@ -427,9 +462,7 @@ if (formCloudBg && typeof gsap !== 'undefined') {
             end: 'bottom top',
             scrub: 1.5
         },
-        y: 60,
-        x: -20,
-        rotation: -3,
+        y: -100,
         ease: 'none'
     });
 }
@@ -444,9 +477,7 @@ if (formLeaf && typeof gsap !== 'undefined') {
             end: 'bottom top',
             scrub: 2.5
         },
-        y: -70,
-        x: -25,
-        rotation: -8,
+        y: -110,
         ease: 'none'
     });
 }
@@ -461,10 +492,33 @@ if (formHeart && typeof gsap !== 'undefined') {
             end: 'bottom top',
             scrub: 1.8
         },
-        y: -50,
-        x: 20,
-        rotation: 10,
-        scale: 1.1,
+        y: -90,
         ease: 'none'
+    });
+}
+
+
+// Parallax background images for courses/webinars sections
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    document.querySelectorAll('[data-parallax-bg]').forEach((img) => {
+        const section = img.closest('section');
+        
+        if (section) {
+            // Move up on scroll
+            gsap.fromTo(img,
+                {
+                    y: 0
+                },
+                {
+                    y: -100,
+                    scrollTrigger: {
+                        trigger: section,
+                        start: 'top bottom',
+                        end: 'bottom top',
+                        scrub: 1
+                    }
+                }
+            );
+        }
     });
 }
