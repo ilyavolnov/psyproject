@@ -79,32 +79,57 @@ class ConsultationPopup {
     async handleSubmit(e) {
         e.preventDefault();
         
-        const formData = new FormData(this.form);
-        const data = {
-            name: formData.get('name'),
-            phone: formData.get('phone'),
-            email: formData.get('email'),
-            requestType: formData.get('requestType'),
-            message: formData.get('message'),
-            timestamp: new Date().toISOString()
-        };
+        const submitBtn = this.form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
         
-        console.log('Form data:', data);
-        
-        // TODO: Send to backend/Telegram
-        // Example:
-        // await fetch('/api/consultation', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // });
-        
-        // Show success message
-        alert('Спасибо за заявку! Мы свяжемся с вами в ближайшее время.');
-        
-        // Reset form and close popup
-        this.form.reset();
-        this.close();
+        try {
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>Отправка...</span>';
+            
+            const formData = new FormData(this.form);
+            const data = {
+                name: formData.get('name'),
+                phone: formData.get('phone'),
+                email: formData.get('email'),
+                requestType: formData.get('requestType'),
+                message: formData.get('message')
+            };
+            
+            // Send to backend
+            const API_URL = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3000/api' 
+                : 'https://your-backend-url.com/api';
+            
+            const response = await fetch(`${API_URL}/applications`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Show success message
+                alert('✅ Спасибо за заявку! Мы свяжемся с вами в ближайшее время.');
+                
+                // Reset form and close popup
+                this.form.reset();
+                this.close();
+            } else {
+                throw new Error(result.message || 'Ошибка при отправке заявки');
+            }
+            
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('❌ Произошла ошибка при отправке заявки. Пожалуйста, попробуйте позже или свяжитесь с нами по телефону.');
+        } finally {
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
     }
 }
 
