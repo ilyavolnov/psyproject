@@ -10,33 +10,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+    <script src="includes/load-components.js" defer></script>
 </head>
 
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <h1>Маргарита Румянцева</h1>
-                    <p class="subtitle">Врач-психотерапевт, которому доверяют</p>
-                </div>
-                <nav class="nav">
-                    <a href="index.html" class="nav-link">Главная</a>
-                    <a href="#courses" class="nav-link">Курсы</a>
-                    <a href="#events" class="nav-link">Вебинары</a>
-                    <a href="specialists.html" class="nav-link">Специалисты</a>
-                    <a href="#supervision" class="nav-link">Супервизии</a>
-                </nav>
-                <button class="cta-button">Получить консультацию</button>
-                <button class="burger-menu" aria-label="Меню">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </header>
+    <div id="header-placeholder"></div>
 
     <!-- Specialists Hero -->
     <section class="specialists-hero">
@@ -48,6 +27,89 @@
             </nav>
             <h1 class="specialists-hero-title">Наши <span class="highlight-blue">специалисты</span></h1>
             <p class="specialists-hero-subtitle">40 психологов работают с запросами разной сложности</p>
+        </div>
+    </section>
+
+    <!-- Banners Slider -->
+    <section class="banners-section">
+        <!-- Decorative clouds -->
+        <img src="images/form/cloud.png" alt="" class="banner-cloud-1" data-parallax>
+        <img src="images/form/cloud.png" alt="" class="banner-cloud-2" data-parallax>
+        
+        <div class="container">
+            <div class="banners-slider">
+                <div class="banner-slide">
+                    <!-- Cloud on banner card -->
+                    <img src="images/form/cloud.png" alt="" class="banner-cloud-on-card">
+                    
+                    <div class="banner-content">
+                        <h2 class="banner-title">Нужна срочная консультация?</h2>
+                        <p class="banner-subtitle">Оставьте заявку, и мы подберем специалиста в течение 24 часов</p>
+                        <button class="banner-btn urgent-consultation-btn">
+                            <span>Оставить заявку</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="banner-slide">
+                    <!-- Cloud on banner card -->
+                    <img src="images/form/cloud.png" alt="" class="banner-cloud-on-card">
+                    
+                    <div class="banner-content family-session">
+                        <h2 class="banner-title">Семейная сессия в 4 руки</h2>
+                        <p class="banner-subtitle">2 партнёра + 2 опытных семейных терапевта</p>
+                        <div class="therapists-info">
+                            <div class="therapist-item">
+                                <h4>Маргарита</h4>
+                                <ul>
+                                    <li>Врач-психотерапевт, сексолог</li>
+                                    <li>Семейный терапевт</li>
+                                    <li>Супервизор</li>
+                                    <li>EMDR-терапевт с Европейской аккредитацией</li>
+                                    <li>IFS-практик</li>
+                                </ul>
+                            </div>
+                            <div class="therapist-item">
+                                <h4>Ксения</h4>
+                                <ul>
+                                    <li>Психолог</li>
+                                    <li>EMDR-терапевт с Европейской аккредитацией</li>
+                                    <li>Супервизор</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="banner-actions">
+                            <p class="banner-price">69000 ₽</p>
+                            <div class="banner-buttons">
+                                <button class="banner-btn banner-btn-outline">Подробнее</button>
+                                <button class="banner-btn banner-btn-primary">Записаться</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="banner-slide">
+                    <!-- Cloud on banner card -->
+                    <img src="images/form/cloud.png" alt="" class="banner-cloud-on-card">
+                    
+                    <div class="banner-content">
+                        <h2 class="banner-title">Супервизии со специалистом</h2>
+                        <p class="banner-subtitle">Профессиональная поддержка для психологов и психотерапевтов</p>
+                        <p class="banner-description">Индивидуальные и групповые супервизии с опытными специалистами. Разбор сложных случаев, профессиональный рост и поддержка в работе.</p>
+                        <div class="banner-buttons" style="justify-content: center; margin-top: 30px;">
+                            <button class="banner-btn banner-btn-primary" onclick="window.location.href='supervision.html'">
+                                <span>Смотреть все супервизии</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="banner-controls">
+                <button class="banner-prev">←</button>
+                <div class="banner-dots"></div>
+                <button class="banner-next">→</button>
+            </div>
         </div>
     </section>
 
@@ -66,124 +128,61 @@
         </div>
     </section>
 
-    <!-- Urgent Consultation CTA -->
-    <section class="urgent-consultation">
-        <div class="container">
-            <div class="urgent-content">
-                <h2 class="urgent-title">Нужна срочная консультация?</h2>
-                <p class="urgent-subtitle">Оставьте заявку, и мы подберем специалиста в течение 24 часов</p>
-                <button class="urgent-btn">
-                    <span>Оставить заявку</span>
+    <!-- Consultation Popup -->
+    <div class="popup-overlay" id="consultationPopup">
+        <div class="popup-content">
+            <button class="popup-close" id="closePopup">&times;</button>
+            <h2 class="popup-title">Оставить заявку</h2>
+            <p class="popup-subtitle">Заполните форму, и мы свяжемся с вами в течение 24 часов</p>
+            
+            <form class="popup-form" id="consultationForm">
+                <div class="form-group">
+                    <label for="name">Ваше имя *</label>
+                    <input type="text" id="name" name="name" required placeholder="Введите ваше имя">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Телефон *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+7 (___) ___-__-__">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="example@mail.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="requestType">Тип заявки *</label>
+                    <select id="requestType" name="requestType" required>
+                        <option value="">Выберите тип заявки</option>
+                        <option value="urgent">Срочная консультация</option>
+                        <option value="family">Семейная сессия в 4 руки</option>
+                        <option value="specialist">Запись к специалисту</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Комментарий</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Расскажите о вашем запросе"></textarea>
+                </div>
+                
+                <button type="submit" class="popup-submit-btn">
+                    <span>Отправить заявку</span>
                 </button>
-            </div>
+                
+                <p class="popup-privacy">Нажимая кнопку, вы соглашаетесь с <a href="#">политикой конфиденциальности</a></p>
+            </form>
         </div>
-    </section>
+    </div>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <!-- Company Info -->
-                <div class="footer-column footer-company">
-                    <h3 class="footer-title">Маргарита Румянцева</h3>
-                    <p class="footer-text">Врач-психотерапевт, которому доверяют</p>
-                    <div class="footer-legal">
-                        <p>ИП Румянцева Маргарита Александровна</p>
-                        <p>ОГРНИП 321784700122871</p>
-                        <p>г. Санкт-Петербург</p>
-                    </div>
-                    <div class="footer-contact">
-                        <a href="mailto:support@dr-rumyantceva.ru" class="footer-email">support@dr-rumyantceva.ru</a>
-                    </div>
-                    <div class="footer-credits">
-                        <p>Сайт разработан экспертами</p>
-                        <a href="#" class="footer-agency">KULAGIN GROUP</a>
-                    </div>
-                </div>
-
-                <!-- Navigation -->
-                <div class="footer-column footer-nav">
-                    <h4 class="footer-heading">Навигация</h4>
-                    <ul class="footer-links">
-                        <li><a href="index.html">Главная</a></li>
-                        <li><a href="specialists.html">Консультация специалистов</a></li>
-                        <li><a href="index.html#courses">Курсы</a></li>
-                        <li><a href="index.html#webinars">Вебинары, интенсивы, тренинги</a></li>
-                        <li><a href="index.html#supervision">Супервизии</a></li>
-                        <li><a href="#certificates">Подарочные сертификаты</a></li>
-                    </ul>
-                </div>
-
-                <!-- Services -->
-                <div class="footer-column footer-services">
-                    <h4 class="footer-heading">Услуги</h4>
-                    <ul class="footer-links">
-                        <li><a href="#consultation">Консультация Маргариты Румянцевой</a></li>
-                    </ul>
-                    <div class="footer-whatsapp">
-                        <p class="footer-question">Есть вопросы?<br>Задайте их в WhatsApp</p>
-                        <a href="https://wa.me/79991234567" class="whatsapp-button">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
-                                    fill="currentColor" />
-                            </svg>
-                            Написать в WhatsApp
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Social Media -->
-                <div class="footer-column footer-social">
-                    <h4 class="footer-heading">Мы в соцсетях</h4>
-                    <div class="social-links">
-                        <a href="#" class="social-link" aria-label="VK">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.45 14.41h-1.4c-.46 0-.6-.37-1.42-1.19-.72-.72-1.03-.82-1.21-.82-.25 0-.32.07-.32.42v1.08c0 .29-.09.46-1.13.46-1.68 0-3.55-.99-4.86-2.83-1.97-2.69-2.51-4.72-2.51-5.13 0-.18.07-.35.42-.35h1.4c.31 0 .43.14.55.48.64 1.84 1.72 3.45 2.16 3.45.17 0 .24-.08.24-.5v-1.96c-.06-.98-.57-1.06-.57-1.41 0-.15.12-.29.32-.29h2.21c.26 0 .36.14.36.44v2.65c0 .26.12.36.19.36.17 0 .3-.1.6-.4 1.01-1.13 1.73-2.88 1.73-2.88.09-.2.23-.35.54-.35h1.4c.37 0 .45.19.37.44-.14.67-.65 1.64-1.32 2.63-.54.78-1.01 1.46-1.01 1.67 0 .14.06.25.36.56.23.24 1 .96 1.51 1.54.31.35.55.65.61.85.07.21-.04.32-.25.32z" />
-                            </svg>
-                        </a>
-                        <a href="#" class="social-link" aria-label="Instagram">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                            </svg>
-                        </a>
-                        <a href="#" class="social-link" aria-label="Telegram">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
-                            </svg>
-                        </a>
-                        <a href="#" class="social-link" aria-label="YouTube">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bottom Bar -->
-            <div class="footer-bottom">
-                <div class="footer-copyright">
-                    <p>© Авторское право 2021-2024 Маргарита Румянцева. Все права защищены.</p>
-                </div>
-                <div class="footer-legal-links">
-                    <a href="#">Политика конфиденциальности</a>
-                    <a href="#">Договор-оферта</a>
-                    <a href="#">Согласие на обработку персональных данных</a>
-                    <a href="#">Правила оплаты</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="script.js"></script>
+    <script src="banners-slider.js"></script>
+    <script src="consultation-popup.js"></script>
     <script src="specialists-loader.js"></script>
 </body>
 

@@ -89,6 +89,33 @@ class SpecialistProfile {
                 </ul>
             </div>` : '';
 
+        const testimonials = spec.testimonials && spec.testimonials.length > 0 ?
+            `<div class="profile-block testimonials-block">
+                <h3 class="profile-block-title">Отзывы клиентов</h3>
+                <div class="testimonials-list">
+                    ${spec.testimonials.map(t => `
+                        <div class="testimonial-item">
+                            <p class="testimonial-text">"${t.text}"</p>
+                            <p class="testimonial-author">— ${t.author}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>` : '';
+
+        const additionalServices = spec.additionalServices && spec.additionalServices.length > 0 ?
+            `<div class="profile-block additional-services-block">
+                <h3 class="profile-block-title">Дополнительные услуги</h3>
+                <div class="services-list">
+                    ${spec.additionalServices.map(s => `
+                        <div class="service-item">
+                            <h4 class="service-title">${s.title}</h4>
+                            <p class="service-description">${s.description}</p>
+                            ${s.contact ? `<p class="service-contact">${s.contact}</p>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>` : '';
+
         const description = spec.description || 'Описание специалиста будет добавлено позже.';
 
         this.container.innerHTML = `
@@ -127,6 +154,8 @@ class SpecialistProfile {
 
                 ${education}
                 ${approaches}
+                ${testimonials}
+                ${additionalServices}
 
                 <div class="profile-block payment-block">
                     <h3 class="profile-block-title">Схема оплаты</h3>

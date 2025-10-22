@@ -20,7 +20,12 @@ class SpecialistsManager {
         try {
             const response = await fetch('specialists-data.json');
             const data = await response.json();
-            this.specialists = data.specialists;
+            
+            // Sort by status: available -> waiting -> full
+            const statusOrder = { 'available': 1, 'waiting': 2, 'full': 3 };
+            this.specialists = data.specialists.sort((a, b) => {
+                return statusOrder[a.status] - statusOrder[b.status];
+            });
         } catch (error) {
             console.error('Error loading specialists:', error);
         }
@@ -147,5 +152,33 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (grid) {
         new SpecialistsManager();
+    }
+    
+    // Parallax effect for clouds
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        const clouds = document.querySelectorAll('[data-parallax]');
+        
+        clouds.forEach((cloud) => {
+            const section = cloud.closest('section');
+            
+            if (section) {
+                gsap.fromTo(cloud,
+                    {
+                        y: 0,
+                        x: 0
+                    },
+                    {
+                        y: -80,
+                        x: 20,
+                        scrollTrigger: {
+                            trigger: section,
+                            start: 'top bottom',
+                            end: 'bottom top',
+                            scrub: 1.5
+                        }
+                    }
+                );
+            }
+        });
     }
 });
