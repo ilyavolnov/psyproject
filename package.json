@@ -1,15 +1,18 @@
 {
-  "name": "margarita-rumyantseva-website",
+  "name": "psyproject",
   "version": "1.0.0",
-  "description": "Awwwards-worthy website for psychotherapist Margarita Rumyantseva",
+  "description": "Сайт психотерапевта с админ-панелью и Telegram ботом",
   "scripts": {
-    "dev": "npx live-server --port=3000 --open=/ --watch=.",
-    "start": "npm run dev"
+    "start": "npm run start:all",
+    "start:all": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "python3 -m http.server 8000",
+    "install:all": "npm install && cd backend && npm install"
   },
-  "keywords": ["website", "psychotherapy", "awwwards"],
+  "keywords": ["psychotherapy", "website", "admin", "telegram"],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "live-server": "^1.2.2"
+    "concurrently": "^8.2.2"
   }
 }

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Супервизия - Маргарита Румянцева</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="includes/load-components.js" defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Supervision Profile Section -->
+    <section class="specialist-profile-section">
+        <div class="container">
+            <nav class="breadcrumbs">
+                <a href="index.html">Главная</a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="supervision.html">Супервизии</a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current" id="supervision-name">Загрузка...</span>
+            </nav>
+
+            <div class="specialist-profile-grid">
+                <!-- Left Column - Image and Basic Info -->
+                <div class="specialist-profile-left">
+                    <div class="specialist-profile-image">
+                        <img id="supervision-image" src="" alt="Супервизор">
+                    </div>
+
+                    <div class="specialist-profile-card">
+                        <h3 class="profile-card-title">Стоимость</h3>
+                        <div class="supervision-price-info">
+                            <div class="price-amount" id="supervision-price">3900 ₽</div>
+                            <div class="price-duration" id="supervision-duration">55 минут</div>
+                            <p class="price-note">*стоимость за встречу</p>
+                        </div>
+                        <button class="specialist-book-btn" id="payButton">Оплатить</button>
+                    </div>
+
+                    <div class="specialist-profile-card">
+                        <h3 class="profile-card-title">Контакты</h3>
+                        <div class="contact-info-block">
+                            <p class="contact-instruction">На номер в WhatsApp <a href="https://wa.me/79211880755" target="_blank" class="whatsapp-link">8 921 188 07 55</a> отправьте скрин оплаты (или электронный чек).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Detailed Info -->
+                <div class="specialist-profile-right">
+                    <h1 class="specialist-profile-name" id="supervision-title">Загрузка...</h1>
+                    
+                    <div class="specialist-profile-tags" id="supervision-tags">
+                        <!-- Tags will be loaded here -->
+                    </div>
+
+                    <div class="specialist-profile-info">
+                        <div class="info-item">
+                            <span class="info-label">Опыт:</span>
+                            <span class="info-value" id="supervision-experience">10 лет</span>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="specialist-profile-section-block">
+                        <h2 class="profile-section-title">Описание</h2>
+                        <div class="profile-section-content" id="supervision-description">
+                            <!-- Description will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="specialist-profile-section-block">
+                        <h2 class="profile-section-title">Образование и профессиональный статус</h2>
+                        <div class="profile-section-content" id="supervision-education">
+                            <!-- Education will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Payment Scheme -->
+                    <div class="specialist-profile-section-block">
+                        <h2 class="profile-section-title">Схема оплаты</h2>
+                        <div class="profile-section-content">
+                            <ol class="payment-scheme-list">
+                                <li>На номер в WhatsApp <a href="https://wa.me/79211880755" target="_blank" class="whatsapp-link">8 921 188 07 55</a> вы отправляете скрин оплаты (или электронный чек) и указываете имя специалиста</li>
+                                <li>После оплаты согласовывается ближайшая дата супервизии и удобное для Вас время совместно с терапевтом.</li>
+                                <li>Оплата последующих сессий проводится ЗА СУТКИ до запланированной встречи по указанным выше реквизитам. По каждому переводу скидывается скрин (или электронный чек) в WhatsApp</li>
+                                <li>В случае отмены консультации более, чем за 2 часа, денежные средства остаются на счету с возможностью оплаты следующей сессии (без штрафных санкций).</li>
+                                <li>При отмене консультации менее, чем за 2 часа, денежные средства не компенсируются. (Исключение – обстоятельства непреодолимой силы.)</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <script src="supervision-profile-loader.js"></script>
+    <script src="consultation-popup.js"></script>
+</body>
+
+</html>

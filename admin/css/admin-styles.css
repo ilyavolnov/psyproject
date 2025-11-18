@@ -1,0 +1,291 @@
+/* Admin Login Styles */
+:root {
+    --color-blue: #97C2EC;
+    --color-beige: #D6D0C2;
+    --color-black: #1F1F1F;
+    --color-white: #FFFFFF;
+    --color-gray: #F5F5F5;
+    --color-error: #e74c3c;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.admin-login-page {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    background: linear-gradient(135deg, var(--color-blue) 0%, var(--color-beige) 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-login-container {
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+    z-index: 2;
+}
+
+.admin-login-card {
+    background: var(--color-white);
+    border-radius: 30px;
+    padding: 50px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.6s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-login-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.admin-login-title {
+    font-family: 'Prata', serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--color-black);
+    margin-bottom: 10px;
+}
+
+.admin-login-subtitle {
+    font-size: 16px;
+    color: var(--color-black);
+    opacity: 0.6;
+}
+
+.admin-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.admin-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-black);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-input {
+    padding: 16px 20px;
+    border: 2px solid var(--color-gray);
+    border-radius: 15px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    background: var(--color-white);
+}
+
+.admin-input:focus {
+    outline: none;
+    border-color: var(--color-blue);
+    background: rgba(151, 194, 236, 0.05);
+}
+
+.admin-input::placeholder {
+    color: rgba(31, 31, 31, 0.4);
+}
+
+.admin-form-checkbox {
+    flex-direction: row;
+    align-items: center;
+}
+
+.admin-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.admin-checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--color-blue);
+}
+
+.admin-checkbox-text {
+    color: var(--color-black);
+    opacity: 0.7;
+}
+
+.admin-submit-btn {
+    background: var(--color-black);
+    color: var(--color-white);
+    border: none;
+    padding: 18px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: var(--color-blue);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+    z-index: 0;
+}
+
+.admin-submit-btn:hover::before {
+    width: 400px;
+    height: 400px;
+}
+
+.admin-submit-btn span {
+    position: relative;
+    z-index: 1;
+}
+
+.admin-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.admin-submit-btn:active {
+    transform: translateY(0);
+}
+
+.admin-error-message {
+    background: rgba(231, 76, 60, 0.1);
+    color: var(--color-error);
+    padding: 15px 20px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    border: 2px solid var(--color-error);
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.admin-login-footer {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.admin-back-link {
+    color: var(--color-black);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.admin-back-link:hover {
+    opacity: 1;
+}
+
+/* Background Shapes */
+.admin-login-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.admin-bg-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.1;
+    animation: float 8s ease-in-out infinite;
+}
+
+.admin-bg-shape-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--color-white);
+    top: -100px;
+    left: -100px;
+    animation-delay: 0s;
+}
+
+.admin-bg-shape-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--color-white);
+    bottom: -50px;
+    right: -50px;
+    animation-delay: 2s;
+}
+
+.admin-bg-shape-3 {
+    width: 200px;
+    height: 200px;
+    background: var(--color-white);
+    top: 50%;
+    right: 10%;
+    animation-delay: 4s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-30px) scale(1.05);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-login-card {
+        padding: 30px 25px;
+    }
+
+    .admin-login-title {
+        font-size: 28px;
+    }
+
+    .admin-submit-btn {
+        padding: 16px 40px;
+        font-size: 16px;
+    }
+}

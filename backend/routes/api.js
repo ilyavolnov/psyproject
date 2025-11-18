@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database');
+const { prepare } = require('../database');
 const { notifyNewApplication } = require('../bot');
 
 // Submit application
@@ -17,15 +17,15 @@ router.post('/applications', (req, res) => {
         }
 
         // Insert into database
-        const stmt = db.prepare(`
-            INSERT INTO applications (name, phone, email, request_type, message, specialist_id)
+        const stmt = prepare(`
+            INSERT INTO requests (name, phone, email, request_type, message, specialist_id)
             VALUES (?, ?, ?, ?, ?, ?)
         `);
 
         const result = stmt.run(name, phone, email, requestType, message, specialistId || null);
 
         // Get the created application
-        const application = db.prepare('SELECT * FROM applications WHERE id = ?').get(result.lastInsertRowid);
+        const application = prepare('SELECT * FROM requests WHERE id = ?').get(result.lastInsertRowid);
 
         // Send Telegram notification
         notifyNewApplication(application);
@@ -46,23 +46,22 @@ router.post('/applications', (req, res) => {
 });
 
 // Get all applications (for admin)
-router.get('/applications', (req, res) => {
+router.get('/applications', async (req, res) => {
     try {
         const { status, limit = 50, offset = 0 } = req.query;
 
-        let query = 'SELECT * FROM applications';
+        let query = 'SELECT * FROM requests WHERE deleted = 0';
         const params = [];
 
         if (status) {
-            query += ' WHERE status = ?';
+            query += ' AND status = ?';
             params.push(status);
         }
 
         query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
         params.push(parseInt(limit), parseInt(offset));
 
-        const stmt = db.prepare(query);
-        const applications = stmt.all(...params);
+        const applications = await prepare(query).all(...params);
 
         res.json({
             success: true,
@@ -80,7 +79,7 @@ router.get('/applications', (req, res) => {
 });
 
 // Get specialists
-router.get('/specialists', (req, res) => {
+router.get('/specialists', async (req, res) => {
     try {
         const { status } = req.query;
 
@@ -94,8 +93,7 @@ router.get('/specialists', (req, res) => {
 
         query += ' ORDER BY name';
 
-        const stmt = db.prepare(query);
-        const specialists = stmt.all(...params);
+        const specialists = await prepare(query).all(...params);
 
         res.json({
             success: true,

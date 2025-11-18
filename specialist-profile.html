@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль специалиста - Маргарита Румянцева</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="payment-popup-styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prata&family=Inter:wght@400;500;600;700&display=swap"
@@ -38,10 +39,63 @@
     <!-- Footer -->
     <div id="footer-placeholder"></div>
 
+    <!-- Payment Popup -->
+    <div class="payment-popup" id="paymentPopup">
+        <div class="payment-popup-overlay"></div>
+        <div class="payment-popup-content">
+            <button class="payment-popup-close">&times;</button>
+            <h2 class="payment-popup-title">Оформление заказа</h2>
+            <div class="payment-popup-price" id="paymentPopupPrice">25000 ₽</div>
+            
+            <form class="payment-form" id="paymentForm">
+                <div class="form-group">
+                    <label for="paymentName">Имя</label>
+                    <input type="text" id="paymentName" name="name" required placeholder="Введите ваше имя">
+                </div>
+                
+                <div class="form-group">
+                    <label for="paymentPhone">Телефон</label>
+                    <input type="tel" id="paymentPhone" name="phone" required placeholder="+7 (___) ___-__-__">
+                </div>
+                
+                <div class="form-group">
+                    <label for="paymentEmail">Email</label>
+                    <input type="email" id="paymentEmail" name="email" required placeholder="example@mail.com">
+                </div>
+                
+                <div class="form-group form-checkbox">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="privacy" required>
+                        <span class="checkbox-text">Я ознакомлен(а) и согласен(а) с <a href="#" target="_blank">Политикой конфиденциальности</a></span>
+                    </label>
+                </div>
+                
+                <div class="form-group form-checkbox">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="personalData" required>
+                        <span class="checkbox-text">Я даю согласие на обработку моих персональных данных</span>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <button type="button" class="promo-toggle-btn">Ввести промокод</button>
+                    <div class="promo-input-wrapper" style="display: none;">
+                        <input type="text" id="promoCode" name="promoCode" placeholder="Введите промокод">
+                        <button type="button" class="promo-apply-btn">Применить</button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="payment-submit-btn">Перейти к оплате</button>
+            </form>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="script.js"></script>
+    <script src="order-popup.js"></script>
     <script src="specialist-profile-loader.js"></script>
+    <script src="specialist-payment.js"></script>
 </body>
 
 </html>

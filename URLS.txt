@@ -1,0 +1,64 @@
+╔════════════════════════════════════════════════════════════╗
+║                    ССЫЛКИ ДЛЯ ДОСТУПА                      ║
+╚════════════════════════════════════════════════════════════╝
+
+🌐 FRONTEND (Основной сайт):
+   http://localhost:8000
+   http://localhost:8000/index.html
+
+👤 АДМИН-ПАНЕЛЬ:
+   http://localhost:8000/admin/pages/admin-login.html
+   
+   Логин:    admin
+   Пароль:   admin123
+
+🔧 BACKEND API:
+   http://localhost:3001
+   http://localhost:3001/health (проверка работы)
+
+📋 API ENDPOINTS:
+
+   Заявки:
+   - GET    http://localhost:3001/api/requests
+   - POST   http://localhost:3001/api/requests
+   - PUT    http://localhost:3001/api/requests/:id
+   - DELETE http://localhost:3001/api/requests/:id
+
+   Специалисты:
+   - GET    http://localhost:3001/api/specialists
+   - GET    http://localhost:3001/api/specialists/:id
+   - PUT    http://localhost:3001/api/specialists/:id
+   - POST   http://localhost:3001/api/specialists
+   - DELETE http://localhost:3001/api/specialists/:id
+
+   Настройки:
+   - GET    http://localhost:3001/api/settings
+   - PUT    http://localhost:3001/api/settings
+   - POST   http://localhost:3001/api/settings/test-telegram
+
+═══════════════════════════════════════════════════════════════
+
+📱 РАЗДЕЛЫ АДМИНКИ:
+
+   📊 Дашборд          - Общая статистика
+   📋 Заявки           - Управление заявками клиентов
+   👥 Специалисты      - Карточки и редактирование
+   📚 Курсы            - В разработке
+   🎓 Супервизии       - В разработке
+   🎁 Сертификаты      - В разработке
+   ⭐ Отзывы           - В разработке
+   ⚙️  Настройки       - Telegram бот
+
+═══════════════════════════════════════════════════════════════
+
+🚀 ЗАПУСК:
+
+   Mac/Linux:    ./start.sh
+   Windows:      start.bat
+   NPM:          npm start
+
+🛑 ОСТАНОВКА:
+
+   Нажмите Ctrl+C в терминале
+
+═══════════════════════════════════════════════════════════════

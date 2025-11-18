@@ -17,9 +17,23 @@ document.querySelectorAll('.nav-link').forEach(link => {
 
 // Smooth scroll for CTA buttons
 document.querySelectorAll('.cta-button, .hero-cta-button').forEach(button => {
-    button.addEventListener('click', function () {
-        // Placeholder for modal or scroll to contact form
-        alert('Форма консультации будет добавлена позже');
+    button.addEventListener('click', function (e) {
+        e.preventDefault();
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Focus on first input after scroll
+            setTimeout(() => {
+                const firstInput = contactForm.querySelector('input[type="text"]');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            }, 800);
+        }
     });
 });
 
@@ -521,4 +535,121 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
             );
         }
     });
+}
+
+
+// Course items click handler
+document.querySelectorAll('.course-item[data-course-id]').forEach(item => {
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', function() {
+        const courseId = this.dataset.courseId;
+        if (courseId) {
+            window.location.href = `course-page.html?id=${courseId}`;
+        }
+    });
+});
+
+
+// Contact form submission
+const mainContactForm = document.getElementById('contactForm');
+if (mainContactForm) {
+    mainContactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitButton = this.querySelector('.form-submit');
+        const originalText = submitButton.innerHTML;
+        
+        // Disable button and show loading
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span>Отправка...</span>';
+        
+        // Get form data
+        const formData = {
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            message: document.getElementById('message').value,
+            request_type: 'consultation',
+            userType: document.querySelector('input[name="userType"]:checked')?.value
+        };
+        
+        // Add userType to message
+        if (formData.userType) {
+            formData.message = `[${formData.userType === 'client' ? 'Клиент' : 'Психотерапевт'}] ${formData.message}`;
+        }
+        
+        try {
+            const response = await fetch('http://localhost:3001/api/requests', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Show success message
+                submitButton.innerHTML = '<span>✅ Заявка отправлена!</span>';
+                submitButton.style.background = '#28a745';
+                
+                // Reset form
+                mainContactForm.reset();
+                
+                // Show success notification
+                showNotification('Спасибо! Мы свяжемся с вами в ближайшее время.', 'success');
+                
+                // Restore button after 3 seconds
+                setTimeout(() => {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalText;
+                    submitButton.style.background = '';
+                }, 3000);
+            } else {
+                throw new Error(data.error || 'Ошибка отправки');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            
+            // Show error
+            submitButton.innerHTML = '<span>❌ Ошибка отправки</span>';
+            submitButton.style.background = '#dc3545';
+            
+            showNotification('Произошла ошибка. Попробуйте позже или свяжитесь с нами по телефону.', 'error');
+            
+            // Restore button after 3 seconds
+            setTimeout(() => {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+                submitButton.style.background = '';
+            }, 3000);
+        }
+    });
+}
+
+// Show notification
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-icon">${type === 'success' ? '✅' : '❌'}</span>
+            <p class="notification-message">${message}</p>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Hide and remove after 5 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 5000);
 }

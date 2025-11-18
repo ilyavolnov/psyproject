@@ -80,7 +80,7 @@
                     <div class="supervision-footer">
                         <p class="supervision-price">3900 ₽</p>
                         <div class="supervision-buttons">
-                            <button class="supervision-btn supervision-btn-outline">Подробнее</button>
+                            <button class="supervision-btn supervision-btn-outline" data-supervision-id="1">Подробнее</button>
                             <button class="supervision-btn supervision-btn-primary">Записаться</button>
                         </div>
                     </div>
@@ -119,11 +119,71 @@
     </section>
 
 
-    <--upgrade Footer -->
+    <!-- Footer -->
     <div id="footer-placeholder"></div>
+
+    <!-- Supervision Details Popup -->
+    <div class="supervision-popup" id="supervisionPopup">
+        <div class="supervision-popup-overlay"></div>
+        <div class="supervision-popup-content">
+            <button class="supervision-popup-close">&times;</button>
+            
+            <div class="supervision-popup-header">
+                <h2 class="supervision-popup-title" id="popupTitle">Загрузка...</h2>
+                <div class="supervision-popup-tags" id="popupTags"></div>
+            </div>
+
+            <div class="supervision-popup-body">
+                <div class="supervision-popup-info">
+                    <div class="popup-info-item">
+                        <span class="popup-info-label">Опыт:</span>
+                        <span class="popup-info-value" id="popupExperience">10 лет</span>
+                    </div>
+                    <div class="popup-info-item">
+                        <span class="popup-info-label">Стоимость:</span>
+                        <span class="popup-info-value" id="popupPrice">3900 ₽</span>
+                    </div>
+                    <div class="popup-info-item">
+                        <span class="popup-info-label">Длительность:</span>
+                        <span class="popup-info-value" id="popupDuration">55 минут</span>
+                    </div>
+                </div>
+
+                <div class="supervision-popup-section">
+                    <h3 class="popup-section-title">Описание</h3>
+                    <div class="popup-section-content" id="popupDescription"></div>
+                </div>
+
+                <div class="supervision-popup-section">
+                    <h3 class="popup-section-title">Образование и профессиональный статус</h3>
+                    <div class="popup-section-content" id="popupEducation"></div>
+                </div>
+
+                <div class="supervision-popup-section">
+                    <h3 class="popup-section-title">Схема оплаты</h3>
+                    <div class="popup-section-content">
+                        <ol class="popup-payment-list">
+                            <li>На номер в WhatsApp <a href="https://wa.me/79211880755" target="_blank" class="whatsapp-link">8 921 188 07 55</a> вы отправляете скрин оплаты (или электронный чек) и указываете имя специалиста</li>
+                            <li>После оплаты согласовывается ближайшая дата супервизии и удобное для Вас время совместно с терапевтом.</li>
+                            <li>Оплата последующих сессий проводится ЗА СУТКИ до запланированной встречи по указанным выше реквизитам. По каждому переводу скидывается скрин (или электронный чек) в WhatsApp</li>
+                            <li>В случае отмены консультации более, чем за 2 часа, денежные средства остаются на счету с возможностью оплаты следующей сессии (без штрафных санкций).</li>
+                            <li>При отмене консультации менее, чем за 2 часа, денежные средства не компенсируются. (Исключение – обстоятельства непреодолимой силы.)</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="supervision-popup-actions">
+                    <button class="supervision-popup-btn" id="popupPayButton">Оплатить</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="order-popup.js"></script>
+    <script src="supervisions-loader.js"></script>
+    <script src="supervision-popup.js"></script>
     <script src="script.js"></script>
 </body>
 

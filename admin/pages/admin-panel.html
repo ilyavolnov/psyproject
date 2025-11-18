@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Маргарита Румянцева</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prata&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin-panel-styles.css">
+</head>
+
+<body class="admin-panel-page">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="admin-sidebar-header">
+            <h2 class="admin-logo">МР</h2>
+            <p class="admin-logo-text">Админ-панель</p>
+        </div>
+
+        <nav class="admin-nav">
+            <a href="#dashboard" class="admin-nav-link active" data-page="dashboard">
+                <span class="admin-nav-icon">📊</span>
+                <span class="admin-nav-text">Дашборд</span>
+            </a>
+            <a href="#requests" class="admin-nav-link" data-page="requests">
+                <span class="admin-nav-icon">📋</span>
+                <span class="admin-nav-text">Заявки</span>
+                <span class="admin-badge">12</span>
+            </a>
+            <a href="#specialists" class="admin-nav-link" data-page="specialists">
+                <span class="admin-nav-icon">👥</span>
+                <span class="admin-nav-text">Специалисты</span>
+            </a>
+            <a href="#courses" class="admin-nav-link" data-page="courses">
+                <span class="admin-nav-icon">📚</span>
+                <span class="admin-nav-text">Курсы</span>
+            </a>
+            <a href="#supervisions" class="admin-nav-link" data-page="supervisions">
+                <span class="admin-nav-icon">🎓</span>
+                <span class="admin-nav-text">Супервизии</span>
+            </a>
+            <a href="#promo-codes" class="admin-nav-link" data-page="promo-codes">
+                <span class="admin-nav-icon">🎁</span>
+                <span class="admin-nav-text">Промокоды</span>
+            </a>
+            <a href="#certificates" class="admin-nav-link" data-page="certificates">
+                <span class="admin-nav-icon">🎁</span>
+                <span class="admin-nav-text">Сертификаты</span>
+            </a>
+            <a href="#settings" class="admin-nav-link" data-page="settings">
+                <span class="admin-nav-icon">⚙️</span>
+                <span class="admin-nav-text">Настройки</span>
+            </a>
+        </nav>
+
+        <div class="admin-sidebar-footer">
+            <button class="admin-logout-btn" id="logoutBtn">
+                <span class="admin-nav-icon">🚪</span>
+                <span>Выйти</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-header-left">
+                <h1 class="admin-page-title" id="pageTitle">Дашборд</h1>
+                <p class="admin-page-subtitle" id="pageSubtitle">Обзор активности</p>
+            </div>
+            <div class="admin-header-right">
+                <div class="admin-user-info">
+                    <span class="admin-user-name" id="userName">Администратор</span>
+                    <span class="admin-user-role">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="admin-content" id="adminContent">
+            <!-- Dashboard will be loaded here -->
+        </div>
+    </main>
+
+    <script src="../js/admin-modals.js?v=25"></script>
+    <script src="../js/admin-api.js?v=25"></script>
+    <script src="../js/admin-specialist-blocks.js?v=25"></script>
+    <script src="../js/admin-course-blocks.js?v=25"></script>
+    <script src="../js/admin-courses-certificates.js?v=25"></script>
+    <script src="../js/admin-supervisions.js?v=25"></script>
+    <script src="../js/admin-promo-codes.js?v=25"></script>
+    <script src="../js/admin-request-popup.js?v=25"></script>
+    <script src="../js/admin-panel.js?v=25"></script>
+</body>
+
+</html>

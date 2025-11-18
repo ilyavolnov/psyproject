@@ -18,6 +18,27 @@ class SpecialistsManager {
 
     async loadData() {
         try {
+            // Try loading from API first (always fresh data)
+            try {
+                const apiResponse = await fetch('http://localhost:3001/api/specialists');
+                const apiData = await apiResponse.json();
+                
+                if (apiData.success && apiData.data) {
+                    console.log('✅ Loaded specialists from API');
+                    this.specialists = apiData.data;
+                    
+                    // Sort by status: available -> waiting -> full
+                    const statusOrder = { 'available': 1, 'waiting': 2, 'full': 3 };
+                    this.specialists.sort((a, b) => {
+                        return statusOrder[a.status] - statusOrder[b.status];
+                    });
+                    return;
+                }
+            } catch (apiError) {
+                console.log('⚠️ API not available, falling back to JSON file');
+            }
+            
+            // Fallback to JSON file
             const response = await fetch('specialists-data.json');
             const data = await response.json();
             
@@ -65,16 +86,20 @@ class SpecialistsManager {
                     ${statusBadge}
                 </div>
                 <div class="specialist-info">
-                    <h3 class="specialist-name">${specialist.name}</h3>
-                    <p class="specialist-role">${specialist.role}</p>
-                    <div class="specialist-specialization">
-                        ${specTags}
+                    <div class="specialist-info-top">
+                        <h3 class="specialist-name">${specialist.name}</h3>
+                        <p class="specialist-role">${specialist.role}</p>
+                        <div class="specialist-specialization">
+                            ${specTags}
+                        </div>
+                        <p class="specialist-experience">Опыт: ${specialist.experience} лет</p>
                     </div>
-                    <p class="specialist-experience">Опыт: ${specialist.experience} лет</p>
-                    <p class="specialist-price">${specialist.price} ₽</p>
-                    <div class="specialist-actions">
-                        <a href="specialist-profile.html?id=${specialist.id}" class="specialist-btn specialist-btn-outline">Подробнее</a>
-                        <button class="specialist-btn specialist-btn-primary" ${buttonDisabled}>${buttonText}</button>
+                    <div class="specialist-info-bottom">
+                        <p class="specialist-price">${specialist.price} ₽</p>
+                        <div class="specialist-actions">
+                            <a href="specialist-profile.html?id=${specialist.id}" class="specialist-btn specialist-btn-outline">Подробнее</a>
+                            <button class="specialist-btn specialist-btn-primary" ${buttonDisabled}>${buttonText}</button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,183 @@
+// Specialist Payment Form Handler
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentPopup = document.getElementById('paymentPopup');
+    const paymentPopupOverlay = paymentPopup?.querySelector('.payment-popup-overlay');
+    const paymentPopupClose = paymentPopup?.querySelector('.payment-popup-close');
+    const paymentForm = document.getElementById('paymentForm');
+    const phoneInput = document.getElementById('paymentPhone');
+    const promoToggleBtn = document.querySelector('.promo-toggle-btn');
+    const promoInputWrapper = document.querySelector('.promo-input-wrapper');
+    const promoApplyBtn = document.querySelector('.promo-apply-btn');
+    
+    let currentPrice = 0;
+    let currentSpecialist = '';
+    let discountApplied = false;
+
+    // Open payment popup
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.profile-pay-btn')) {
+            const btn = e.target.closest('.profile-pay-btn');
+            currentPrice = parseInt(btn.getAttribute('data-price'));
+            currentSpecialist = btn.getAttribute('data-specialist');
+            
+            document.getElementById('paymentPopupPrice').textContent = formatPrice(currentPrice);
+            openPopup();
+        }
+    });
+
+    // Close popup
+    function closePopup() {
+        paymentPopup.classList.remove('active');
+        document.body.style.overflow = '';
+        paymentForm.reset();
+        discountApplied = false;
+        promoInputWrapper.style.display = 'none';
+    }
+
+    function openPopup() {
+        paymentPopup.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    if (paymentPopupClose) {
+        paymentPopupClose.addEventListener('click', closePopup);
+    }
+
+    if (paymentPopupOverlay) {
+        paymentPopupOverlay.addEventListener('click', closePopup);
+    }
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && paymentPopup.classList.contains('active')) {
+            closePopup();
+        }
+    });
+
+    // Phone mask
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length > 0) {
+                if (value[0] !== '7') {
+                    value = '7' + value;
+                }
+                
+                let formatted = '+7';
+                if (value.length > 1) {
+                    formatted += ' (' + value.substring(1, 4);
+                }
+                if (value.length >= 5) {
+                    formatted += ') ' + value.substring(4, 7);
+                }
+                if (value.length >= 8) {
+                    formatted += '-' + value.substring(7, 9);
+                }
+                if (value.length >= 10) {
+                    formatted += '-' + value.substring(9, 11);
+                }
+                
+                e.target.value = formatted;
+            }
+        });
+    }
+
+    // Promo code toggle
+    if (promoToggleBtn) {
+        promoToggleBtn.addEventListener('click', function() {
+            if (promoInputWrapper.style.display === 'none') {
+                promoInputWrapper.style.display = 'flex';
+                this.textContent = 'Скрыть промокод';
+            } else {
+                promoInputWrapper.style.display = 'none';
+                this.textContent = 'Ввести промокод';
+            }
+        });
+    }
+
+    // Apply promo code
+    if (promoApplyBtn) {
+        promoApplyBtn.addEventListener('click', function() {
+            const promoInput = document.getElementById('promoCode');
+            const promoCode = promoInput.value.trim().toUpperCase();
+            
+            // Example promo codes
+            const promoCodes = {
+                'FIRST10': 10, // 10% discount
+                'WELCOME': 15, // 15% discount
+                'SAVE20': 20   // 20% discount
+            };
+            
+            if (promoCodes[promoCode] && !discountApplied) {
+                const discount = promoCodes[promoCode];
+                const newPrice = currentPrice * (1 - discount / 100);
+                
+                document.getElementById('paymentPopupPrice').innerHTML = 
+                    `<span style="text-decoration: line-through; opacity: 0.5;">${formatPrice(currentPrice)}</span> ${formatPrice(newPrice)}`;
+                
+                currentPrice = newPrice;
+                discountApplied = true;
+                
+                alert(`Промокод применен! Скидка ${discount}%`);
+                promoInput.disabled = true;
+                this.disabled = true;
+                this.textContent = 'Применено';
+            } else if (discountApplied) {
+                alert('Промокод уже применен');
+            } else {
+                alert('Неверный промокод');
+            }
+        });
+    }
+
+    // Form submission
+    if (paymentForm) {
+        paymentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('paymentName').value,
+                phone: document.getElementById('paymentPhone').value,
+                email: document.getElementById('paymentEmail').value,
+                specialist: currentSpecialist,
+                price: currentPrice,
+                promoCode: document.getElementById('promoCode').value
+            };
+            
+            console.log('Payment form data:', formData);
+            
+            // Here you would redirect to payment system
+            // For now, show success message
+            alert(`Переход к оплате консультации с ${currentSpecialist} на сумму ${formatPrice(currentPrice)}`);
+            
+            // In production, redirect to payment:
+            // window.location.href = 'https://your-payment-system.com/pay?amount=' + currentPrice;
+            
+            closePopup();
+        });
+    }
+
+    // Format price helper
+    function formatPrice(price) {
+        return new Intl.NumberFormat('ru-RU').format(price) + ' ₽';
+    }
+
+    // Schedule button handler
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.profile-schedule-btn')) {
+            // Open schedule or redirect to booking
+            alert('Расписание и запись будут добавлены позже');
+            // You can implement a schedule popup or redirect to booking system
+        }
+    });
+
+    // Review button handler
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.profile-review-btn-secondary')) {
+            // Open review form or redirect
+            alert('Форма отзыва будет добавлена позже');
+            // You can implement a review form popup similar to payment popup
+        }
+    });
+});

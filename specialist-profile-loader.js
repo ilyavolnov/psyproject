@@ -23,11 +23,29 @@ class SpecialistProfile {
 
     async loadSpecialist(id) {
         try {
-            const response = await fetch('specialists-data.json');
+            // Try loading from API first
+            const response = await fetch(`http://localhost:3001/api/specialists/${id}`);
             const data = await response.json();
-            this.specialist = data.specialists.find(s => s.id === id);
+            if (data.success) {
+                this.specialist = data.data;
+                // Parse JSON fields
+                if (typeof this.specialist.testimonials === 'string') {
+                    this.specialist.testimonials = JSON.parse(this.specialist.testimonials || '[]');
+                }
+                if (typeof this.specialist.page_blocks === 'string') {
+                    this.specialist.page_blocks = JSON.parse(this.specialist.page_blocks || '[]');
+                }
+            }
         } catch (error) {
-            console.error('Error loading specialist:', error);
+            console.error('Error loading specialist from API:', error);
+            // Fallback to JSON file
+            try {
+                const response = await fetch('specialists-data.json');
+                const data = await response.json();
+                this.specialist = data.specialists.find(s => s.id === id);
+            } catch (fallbackError) {
+                console.error('Error loading specialist from JSON:', fallbackError);
+            }
         }
     }
 
@@ -65,57 +83,23 @@ class SpecialistProfile {
         
         // Update page title
         document.title = `${spec.name} - Специалист - Маргарита Румянцева`;
-        const specTags = spec.specializations.map(s => 
+        
+        // Handle specializations - can be array or string
+        let specializations = [];
+        if (spec.specializations && Array.isArray(spec.specializations)) {
+            specializations = spec.specializations;
+        } else if (spec.specialization) {
+            // If it's a string, split by comma
+            specializations = spec.specialization.split(',').map(s => s.trim());
+        }
+        
+        const specTags = specializations.map(s => 
             `<span class="spec-tag">✦ ${s}</span>`
         ).join('');
 
         const statusBadge = this.getStatusBadge(spec.status);
         const buttonText = this.getButtonText(spec.status);
         const buttonDisabled = spec.status === 'full' ? 'disabled' : '';
-
-        const education = spec.education ? 
-            `<div class="profile-block">
-                <h3 class="profile-block-title">Образование</h3>
-                <ul class="profile-list">
-                    ${spec.education.map(e => `<li>${e}</li>`).join('')}
-                </ul>
-            </div>` : '';
-
-        const approaches = spec.approaches ?
-            `<div class="profile-block">
-                <h3 class="profile-block-title">Подходы в работе</h3>
-                <ul class="profile-list">
-                    ${spec.approaches.map(a => `<li>${a}</li>`).join('')}
-                </ul>
-            </div>` : '';
-
-        const testimonials = spec.testimonials && spec.testimonials.length > 0 ?
-            `<div class="profile-block testimonials-block">
-                <h3 class="profile-block-title">Отзывы клиентов</h3>
-                <div class="testimonials-list">
-                    ${spec.testimonials.map(t => `
-                        <div class="testimonial-item">
-                            <p class="testimonial-text">"${t.text}"</p>
-                            <p class="testimonial-author">— ${t.author}</p>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>` : '';
-
-        const additionalServices = spec.additionalServices && spec.additionalServices.length > 0 ?
-            `<div class="profile-block additional-services-block">
-                <h3 class="profile-block-title">Дополнительные услуги</h3>
-                <div class="services-list">
-                    ${spec.additionalServices.map(s => `
-                        <div class="service-item">
-                            <h4 class="service-title">${s.title}</h4>
-                            <p class="service-description">${s.description}</p>
-                            ${s.contact ? `<p class="service-contact">${s.contact}</p>` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-            </div>` : '';
-
         const description = spec.description || 'Описание специалиста будет добавлено позже.';
 
         this.container.innerHTML = `
@@ -126,7 +110,7 @@ class SpecialistProfile {
                 </div>
                 <div class="profile-info">
                     <h1 class="profile-name">${spec.name}</h1>
-                    <p class="profile-role">${spec.role}</p>
+                    <p class="profile-role">${spec.role || spec.specialization || ''}</p>
                     <div class="profile-specializations">
                         ${specTags}
                     </div>
@@ -136,12 +120,26 @@ class SpecialistProfile {
                             <span class="meta-value">${spec.experience} лет</span>
                         </div>
                         <div class="profile-meta-item">
-                            <span class="meta-label">Стоимость консультации:</span>
+                            <span class="meta-label">Стоимость:</span>
                             <span class="meta-value">${spec.price} ₽</span>
                         </div>
+                        ${spec.duration ? `
+                        <div class="profile-meta-item">
+                            <span class="meta-label">Длительность:</span>
+                            <span class="meta-value">${spec.duration}</span>
+                        </div>` : ''}
                     </div>
-                    <button class="profile-cta-btn" ${buttonDisabled}>
-                        <span>${buttonText}</span>
+                    <p class="profile-price-note">*стоимость онлайн-консультации</p>
+                    <div class="profile-actions">
+                        <button class="profile-cta-btn profile-pay-btn" ${buttonDisabled} data-price="${spec.price}" data-specialist="${spec.name}">
+                            <span>Оплатить</span>
+                        </button>
+                        <button class="profile-cta-btn profile-schedule-btn">
+                            <span>Расписание</span>
+                        </button>
+                    </div>
+                    <button class="profile-review-btn-secondary">
+                        <span>Оставить отзыв</span>
                     </button>
                 </div>
             </div>
@@ -152,28 +150,115 @@ class SpecialistProfile {
                     <p class="profile-description">${description}</p>
                 </div>
 
-                ${education}
-                ${approaches}
-                ${testimonials}
-                ${additionalServices}
-
-                <div class="profile-block payment-block">
-                    <h3 class="profile-block-title">Схема оплаты</h3>
-                    <div class="payment-info">
-                        <p>На номер в WhatsApp <strong>8 921 188 07 55</strong> вы отправляете скрин оплаты (или электронный чек) и указываете имя специалиста</p>
-                        <p>После вы определяете время консультации совместно с терапевтом.</p>
-                        <p>Оплата последующих сессий проводится <strong>ЗА СУТКИ</strong> до запланированной встречи по указанным выше реквизитам. По каждому переводу скидывается скрин (или электронный чек) в WhatsApp</p>
-                        <div class="payment-rules">
-                            <p><strong>Правила отмены:</strong></p>
-                            <ul>
-                                <li>В случае отмены консультации более, чем за 2 часа, денежные средства остаются на счету с возможностью оплаты следующей сессии (без штрафных санкций).</li>
-                                <li>При отмене консультации менее, чем за 2 часа, денежные средства не компенсируются. (Исключение – обстоятельства непреодолимой силы.)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                ${this.renderPageBlocks()}
             </div>
         `;
+    }
+
+    renderPageBlocks() {
+        const spec = this.specialist;
+        
+        // If page_blocks exist in database, use them
+        if (spec.page_blocks && spec.page_blocks.length > 0) {
+            return spec.page_blocks.map(block => this.renderBlock(block)).join('');
+        }
+        
+        // Fallback to old structure
+        const blocks = [];
+        
+        if (spec.therapyMethods && spec.therapyMethods.length > 0) {
+            blocks.push(this.renderBlock({
+                type: 'list',
+                title: 'Терапия в доказательных модальностях',
+                items: spec.therapyMethods
+            }));
+        }
+        
+        if (spec.additionalServices) {
+            blocks.push(this.renderBlock({
+                type: 'text',
+                title: 'Дополнительные услуги',
+                content: spec.additionalServices
+            }));
+        }
+        
+        if (spec.education && spec.education.length > 0) {
+            blocks.push(this.renderBlock({
+                type: 'list',
+                title: 'Образование',
+                items: spec.education
+            }));
+        }
+        
+        if (spec.approaches && spec.approaches.length > 0) {
+            blocks.push(this.renderBlock({
+                type: 'list',
+                title: 'Подходы в работе',
+                items: spec.approaches
+            }));
+        }
+        
+        if (spec.testimonials && spec.testimonials.length > 0) {
+            blocks.push(this.renderBlock({
+                type: 'testimonials',
+                title: 'Отзывы клиентов',
+                testimonials: spec.testimonials
+            }));
+        }
+        
+        return blocks.join('');
+    }
+    
+    renderBlock(block) {
+        switch(block.type) {
+            case 'text':
+            case 'about':
+                return `
+                    <div class="profile-block">
+                        <h3 class="profile-block-title">${block.title}</h3>
+                        <p class="profile-description">${block.content}</p>
+                    </div>
+                `;
+                
+            case 'list':
+                return `
+                    <div class="profile-block">
+                        <h3 class="profile-block-title">${block.title}</h3>
+                        <ul class="profile-list">
+                            ${block.items.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+                
+            case 'payment':
+                return `
+                    <div class="profile-block payment-block">
+                        <h3 class="profile-block-title">${block.title}</h3>
+                        <div class="payment-info">
+                            ${block.items.map(item => `<p>${item}</p>`).join('')}
+                        </div>
+                    </div>
+                `;
+                
+            case 'testimonials':
+                if (!block.testimonials || block.testimonials.length === 0) return '';
+                return `
+                    <div class="profile-block testimonials-block">
+                        <h3 class="profile-block-title">${block.title || 'Отзывы клиентов'}</h3>
+                        <div class="testimonials-list">
+                            ${block.testimonials.map(t => `
+                                <div class="testimonial-item">
+                                    <p class="testimonial-text">"${t.text}"</p>
+                                    <p class="testimonial-author">— ${t.author}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                
+            default:
+                return '';
+        }
     }
 
     showError(message) {
