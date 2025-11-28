@@ -89,6 +89,9 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'courses':
                 loadCourses();
                 break;
+            case 'webinars':
+                if (typeof loadWebinars === 'function') loadWebinars();
+                break;
             case 'supervisions':
                 loadSupervisions();
                 break;

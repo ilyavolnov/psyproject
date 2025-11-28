@@ -107,6 +107,53 @@ async function initDatabase() {
     db.run(`CREATE INDEX IF NOT EXISTS idx_requests_archived ON requests(archived);`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_requests_deleted ON requests(deleted);`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_specialists_status ON specialists(status);`);
+    
+    // Check if supervision_id column exists in requests
+    try {
+        const requestsInfo = db.exec("PRAGMA table_info(requests)");
+        const hasSupervisionId = requestsInfo[0]?.values.some(col => col[1] === 'supervision_id');
+        if (!hasSupervisionId) {
+            db.run('ALTER TABLE requests ADD COLUMN supervision_id INTEGER');
+            console.log('✅ Added supervision_id column to requests table');
+        }
+    } catch (error) {
+        console.log('ℹ️  Requests migration check:', error.message);
+    }
+
+    // Run migrations
+    try {
+        // Check if slug column exists in courses table
+        const tableInfo = db.exec("PRAGMA table_info(courses)");
+        const hasSlug = tableInfo[0]?.values.some(col => col[1] === 'slug');
+        
+        if (!hasSlug) {
+            db.run('ALTER TABLE courses ADD COLUMN slug TEXT');
+            console.log('✅ Added slug column to courses table');
+        }
+        
+        // Check if page_blocks column exists
+        const hasPageBlocks = tableInfo[0]?.values.some(col => col[1] === 'page_blocks');
+        if (!hasPageBlocks) {
+            db.run('ALTER TABLE courses ADD COLUMN page_blocks TEXT');
+            console.log('✅ Added page_blocks column to courses table');
+        }
+        
+        // Check if start_date column exists
+        const hasStartDate = tableInfo[0]?.values.some(col => col[1] === 'start_date');
+        if (!hasStartDate) {
+            db.run('ALTER TABLE courses ADD COLUMN start_date TEXT');
+            console.log('✅ Added start_date column to courses table');
+        }
+        
+        // Check if type column exists
+        const hasType = tableInfo[0]?.values.some(col => col[1] === 'type');
+        if (!hasType) {
+            db.run("ALTER TABLE courses ADD COLUMN type TEXT DEFAULT 'course'");
+            console.log('✅ Added type column to courses table');
+        }
+    } catch (error) {
+        console.log('ℹ️  Migration check:', error.message);
+    }
 
     // Initialize default settings
     const existingSettings = db.exec('SELECT COUNT(*) as count FROM settings');

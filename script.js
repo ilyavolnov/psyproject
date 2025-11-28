@@ -15,8 +15,17 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 
-// Smooth scroll for CTA buttons
-document.querySelectorAll('.cta-button, .hero-cta-button').forEach(button => {
+// CTA buttons handlers
+document.querySelectorAll('.hero-cta-button').forEach(button => {
+    button.addEventListener('click', function (e) {
+        e.preventDefault();
+        // Главная кнопка ведет на страницу курсов
+        window.location.href = 'pages/courses/courses.html';
+    });
+});
+
+// Other CTA buttons scroll to contact form
+document.querySelectorAll('.cta-button').forEach(button => {
     button.addEventListener('click', function (e) {
         e.preventDefault();
         const contactForm = document.getElementById('contact-form');
@@ -348,7 +357,7 @@ const nextBtn = document.querySelector('.testimonial-next');
 
 if (testimonialsCarousel && prevBtn && nextBtn) {
     const cards = document.querySelectorAll('.testimonial-card');
-    const cardWidth = 430; // 400px + 30px gap
+    const cardWidth = 390; // 360px + 30px gap
     
     // Clone cards for infinite loop
     cards.forEach(card => {
@@ -375,12 +384,16 @@ if (testimonialsCarousel && prevBtn && nextBtn) {
         currentIndex++;
         updateCarousel();
         
-        // Reset to beginning when reaching cloned cards
+        // Reset to beginning seamlessly when reaching cloned cards
         if (currentIndex >= cards.length) {
             setTimeout(() => {
+                testimonialsCarousel.style.transition = 'none';
                 currentIndex = 0;
-                updateCarousel(false);
-                isTransitioning = false;
+                testimonialsCarousel.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+                setTimeout(() => {
+                    testimonialsCarousel.style.transition = 'transform 0.5s ease';
+                    isTransitioning = false;
+                }, 50);
             }, 500);
         } else {
             setTimeout(() => {
@@ -394,15 +407,17 @@ if (testimonialsCarousel && prevBtn && nextBtn) {
         isTransitioning = true;
         
         if (currentIndex === 0) {
+            testimonialsCarousel.style.transition = 'none';
             currentIndex = cards.length;
-            updateCarousel(false);
+            testimonialsCarousel.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
             setTimeout(() => {
+                testimonialsCarousel.style.transition = 'transform 0.5s ease';
                 currentIndex--;
-                updateCarousel();
+                testimonialsCarousel.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
                 setTimeout(() => {
                     isTransitioning = false;
                 }, 500);
-            }, 20);
+            }, 50);
         } else {
             currentIndex--;
             updateCarousel();
@@ -426,6 +441,41 @@ if (testimonialsCarousel && prevBtn && nextBtn) {
     testimonialsCarousel.addEventListener('mouseleave', () => {
         autoScrollInterval = setInterval(nextSlide, 5000);
     });
+
+    // Drag to scroll on mobile
+    const wrapper = document.querySelector('.testimonials-carousel-wrapper');
+    if (wrapper && window.innerWidth <= 768) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        wrapper.addEventListener('mousedown', (e) => {
+            isDown = true;
+            wrapper.style.cursor = 'grabbing';
+            startX = e.pageX - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+        });
+
+        wrapper.addEventListener('mouseleave', () => {
+            isDown = false;
+            wrapper.style.cursor = 'grab';
+        });
+
+        wrapper.addEventListener('mouseup', () => {
+            isDown = false;
+            wrapper.style.cursor = 'grab';
+        });
+
+        wrapper.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - wrapper.offsetLeft;
+            const walk = (x - startX) * 2;
+            wrapper.scrollLeft = scrollLeft - walk;
+        });
+
+        wrapper.style.cursor = 'grab';
+    }
 }
 
 

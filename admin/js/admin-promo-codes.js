@@ -16,7 +16,7 @@ window.loadPromoCodes = async function() {
         </div>
     `;
     
-    document.getElementById('content').innerHTML = content;
+    document.getElementById('adminContent').innerHTML = content;
     await fetchPromoCodes();
 };
 
@@ -109,15 +109,13 @@ window.openPromoCodeModal = function(promoId = null) {
     const isEdit = !!promo;
     
     const modal = document.createElement('div');
-    modal.className = 'admin-modal active';
+    modal.className = 'admin-popup active';
     modal.id = 'promoCodeModal';
     modal.innerHTML = `
-        <div class="admin-modal-overlay" onclick="closePromoCodeModal()"></div>
-        <div class="admin-modal-content">
-            <div class="admin-modal-header">
-                <h3>${isEdit ? 'Редактировать промокод' : 'Новый промокод'}</h3>
-                <button class="admin-modal-close" onclick="closePromoCodeModal()">&times;</button>
-            </div>
+        <div class="admin-popup-overlay" onclick="closePromoCodeModal()"></div>
+        <div class="admin-popup-content" style="max-width: 600px;">
+            <button class="admin-popup-close" onclick="closePromoCodeModal()">&times;</button>
+            <h2 class="admin-popup-title">${isEdit ? 'Редактировать промокод' : 'Новый промокод'}</h2>
             
             <form id="promoCodeForm" class="admin-form">
                 <div class="admin-form-group">
@@ -167,12 +165,12 @@ window.openPromoCodeModal = function(promoId = null) {
                     </select>
                 </div>
                 
-                <div class="admin-modal-footer">
+                <div class="admin-form-actions">
                     <button type="button" class="admin-btn admin-btn-secondary" onclick="closePromoCodeModal()">
                         Отмена
                     </button>
                     <button type="submit" class="admin-btn admin-btn-primary">
-                        ${isEdit ? 'Сохранить' : 'Создать'}
+                        💾 ${isEdit ? 'Сохранить' : 'Создать'}
                     </button>
                 </div>
             </form>
@@ -219,13 +217,13 @@ async function savePromoCode(promoId) {
         if (result.success) {
             closePromoCodeModal();
             await fetchPromoCodes();
-            showNotification(promoId ? 'Промокод обновлен' : 'Промокод создан', 'success');
+            await adminSuccess(promoId ? 'Промокод обновлен!' : 'Промокод создан!');
         } else {
             throw new Error(result.error);
         }
     } catch (error) {
         console.error('Error saving promo code:', error);
-        showNotification('Ошибка: ' + error.message, 'error');
+        await adminError('Ошибка: ' + error.message);
     }
 }
 
@@ -234,7 +232,8 @@ window.editPromoCode = function(promoId) {
 };
 
 window.deletePromoCode = async function(promoId, code) {
-    if (!confirm(`Удалить промокод "${code}"?`)) return;
+    const confirmed = await adminConfirm(`Удалить промокод "${code}"?`);
+    if (!confirmed) return;
     
     try {
         const response = await fetch(`http://localhost:3001/api/promo-codes/${promoId}`, {
@@ -245,12 +244,12 @@ window.deletePromoCode = async function(promoId, code) {
         
         if (result.success) {
             await fetchPromoCodes();
-            showNotification('Промокод удален', 'success');
+            await adminSuccess('Промокод удален!');
         } else {
             throw new Error(result.error);
         }
     } catch (error) {
         console.error('Error deleting promo code:', error);
-        showNotification('Ошибка удаления: ' + error.message, 'error');
+        await adminError('Ошибка удаления: ' + error.message);
     }
 };

@@ -71,24 +71,36 @@ class SpecialistsManager {
     }
 
     createSpecialistCard(specialist) {
-        const specTags = specialist.specializations.map(spec => 
-            `<span class="spec-tag">✦ ${spec}</span>`
-        ).join('');
+        // Handle both API format (specialization string) and JSON format (specializations array)
+        let specTags = '';
+        if (specialist.specializations && Array.isArray(specialist.specializations)) {
+            specTags = specialist.specializations.map(spec => 
+                `<span class="spec-tag">✦ ${spec}</span>`
+            ).join('');
+        } else if (specialist.specialization) {
+            specTags = `<span class="spec-tag">✦ ${specialist.specialization}</span>`;
+        }
 
         const statusBadge = this.getStatusBadge(specialist.status);
         const buttonText = this.getButtonText(specialist.status);
         const buttonDisabled = specialist.status === 'full' ? 'disabled' : '';
+        
+        // Use role if available, otherwise use specialization
+        const role = specialist.role || specialist.specialization || '';
+        
+        // Fix photo path - ensure it starts from root
+        const photoPath = specialist.photo.startsWith('../../') ? specialist.photo : `../../${specialist.photo}`;
 
         return `
             <div class="specialist-card" data-scroll>
                 <div class="specialist-photo">
-                    <img src="${specialist.photo}" alt="${specialist.name}">
+                    <img src="${photoPath}" alt="${specialist.name}">
                     ${statusBadge}
                 </div>
                 <div class="specialist-info">
                     <div class="specialist-info-top">
                         <h3 class="specialist-name">${specialist.name}</h3>
-                        <p class="specialist-role">${specialist.role}</p>
+                        <p class="specialist-role">${role}</p>
                         <div class="specialist-specialization">
                             ${specTags}
                         </div>

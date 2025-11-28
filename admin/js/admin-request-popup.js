@@ -114,6 +114,12 @@ window.openRequestPopup = async function(requestId) {
                         <span class="admin-popup-value">${request.certificate_amount.toLocaleString('ru-RU')} ₽</span>
                     </div>
                     ` : ''}
+                    ${request.supervision_id ? `
+                    <div class="admin-popup-info-item">
+                        <span class="admin-popup-label">Супервизия ID:</span>
+                        <span class="admin-popup-value">${request.supervision_id}</span>
+                    </div>
+                    ` : ''}
                 </div>
             </div>
 

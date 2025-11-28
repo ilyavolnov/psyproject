@@ -37,12 +37,12 @@ window.loadSupervisions = async function() {
                         ${supervisions.map(sup => `
                             <tr>
                                 <td>${sup.id}</td>
-                                <td>${sup.name}</td>
+                                <td>${sup.supervisors || '-'}</td>
                                 <td>${sup.title}</td>
                                 <td>${sup.price.toLocaleString('ru-RU')} ₽</td>
-                                <td>${sup.duration}</td>
-                                <td>${sup.experience}</td>
-                                <td><span class="admin-status-badge admin-status-${sup.status}">${sup.status === 'available' ? 'Доступна' : 'Недоступна'}</span></td>
+                                <td>${sup.duration || '-'}</td>
+                                <td>${sup.experience || '-'}</td>
+                                <td><span class="admin-status-badge admin-status-${sup.status}">${sup.status === 'active' ? 'Активна' : 'Неактивна'}</span></td>
                                 <td>
                                     <div class="admin-actions">
                                         <button class="admin-action-btn admin-action-edit" onclick="openSupervisionPopup(${sup.id})">Редактировать</button>
@@ -56,11 +56,15 @@ window.loadSupervisions = async function() {
             </div>
         `;
         
-        document.getElementById('content').innerHTML = content;
+        document.getElementById('adminContent').innerHTML = content;
         
     } catch (error) {
         console.error('Error loading supervisions:', error);
-        await adminError('Ошибка загрузки супервизий');
+        document.getElementById('adminContent').innerHTML = `
+            <div class="admin-error-message">
+                ❌ Ошибка загрузки супервизий: ${error.message}
+            </div>
+        `;
     }
 };
 
@@ -89,20 +93,31 @@ window.openSupervisionPopup = async function(id = null) {
             <h2 class="admin-popup-title">${supervision ? 'Редактировать супервизию' : 'Добавить супервизию'}</h2>
             
             <form id="supervisionForm" class="admin-form">
-                <div class="admin-form-row">
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Имя супервизора *</label>
-                        <input type="text" class="admin-form-input" id="supervisionName" value="${supervision?.name || ''}" required>
-                    </div>
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">Опыт</label>
-                        <input type="text" class="admin-form-input" id="supervisionExperience" value="${supervision?.experience || ''}" placeholder="10 лет">
-                    </div>
-                </div>
-                
                 <div class="admin-form-group">
                     <label class="admin-form-label">Название супервизии *</label>
                     <input type="text" class="admin-form-input" id="supervisionTitle" value="${supervision?.title || ''}" required>
+                </div>
+                
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Супервизоры</label>
+                        <input type="text" class="admin-form-input" id="supervisionSupervisors" value="${supervision?.supervisors || ''}" placeholder="Маргарита Румянцева">
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Дата</label>
+                        <input type="text" class="admin-form-input" id="supervisionDate" value="${supervision?.date || ''}" placeholder="Каждую среду">
+                    </div>
+                </div>
+                
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Опыт</label>
+                        <input type="text" class="admin-form-input" id="supervisionExperience" value="${supervision?.experience || ''}" placeholder="10+ лет">
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Длительность</label>
+                        <input type="text" class="admin-form-input" id="supervisionDuration" value="${supervision?.duration || ''}" placeholder="55 минут">
+                    </div>
                 </div>
                 
                 <div class="admin-form-row">
@@ -111,36 +126,31 @@ window.openSupervisionPopup = async function(id = null) {
                         <input type="number" class="admin-form-input" id="supervisionPrice" value="${supervision?.price || 0}">
                     </div>
                     <div class="admin-form-group">
-                        <label class="admin-form-label">Длительность</label>
-                        <input type="text" class="admin-form-input" id="supervisionDuration" value="${supervision?.duration || ''}" placeholder="55 минут">
+                        <label class="admin-form-label">Примечание к цене</label>
+                        <input type="text" class="admin-form-input" id="supervisionPriceNote" value="${supervision?.price_note || ''}" placeholder="за сессию">
                     </div>
                 </div>
                 
                 <div class="admin-form-group">
-                    <label class="admin-form-label">Изображение (URL)</label>
-                    <input type="text" class="admin-form-input" id="supervisionImage" value="${supervision?.image || ''}">
+                    <label class="admin-form-label">Описание</label>
+                    <textarea class="admin-form-input" id="supervisionDescription" rows="4" placeholder="Описание супервизии">${supervision?.description || ''}</textarea>
                 </div>
                 
                 <div class="admin-form-group">
-                    <label class="admin-form-label">Теги (по одному на строку)</label>
-                    <textarea class="admin-form-input" id="supervisionTags" rows="3">${supervision?.tags?.join('\n') || ''}</textarea>
+                    <label class="admin-form-label">Особенности (по одной на строку)</label>
+                    <textarea class="admin-form-input" id="supervisionFeatures" rows="6" placeholder="Особенность 1\nОсобенность 2">${supervision?.features?.join('\n') || ''}</textarea>
                 </div>
                 
                 <div class="admin-form-group">
-                    <label class="admin-form-label">Описание (по одному абзацу на строку)</label>
-                    <textarea class="admin-form-input" id="supervisionDescription" rows="4">${supervision?.description?.join('\n\n') || ''}</textarea>
-                </div>
-                
-                <div class="admin-form-group">
-                    <label class="admin-form-label">Образование (по одному пункту на строку)</label>
-                    <textarea class="admin-form-input" id="supervisionEducation" rows="6">${supervision?.education?.join('\n') || ''}</textarea>
+                    <label class="admin-form-label">Бонус</label>
+                    <textarea class="admin-form-input" id="supervisionBonus" rows="2" placeholder="Дополнительные бонусы">${supervision?.bonus || ''}</textarea>
                 </div>
                 
                 <div class="admin-form-group">
                     <label class="admin-form-label">Статус</label>
                     <select class="admin-form-input" id="supervisionStatus">
-                        <option value="available" ${!supervision || supervision.status === 'available' ? 'selected' : ''}>Доступна</option>
-                        <option value="unavailable" ${supervision?.status === 'unavailable' ? 'selected' : ''}>Недоступна</option>
+                        <option value="active" ${!supervision || supervision.status === 'active' ? 'selected' : ''}>Активна</option>
+                        <option value="inactive" ${supervision?.status === 'inactive' ? 'selected' : ''}>Неактивна</option>
                     </select>
                 </div>
                 
@@ -167,15 +177,16 @@ window.closeSupervisionPopup = function() {
 window.saveSupervision = async function(id) {
     try {
         const data = {
-            name: document.getElementById('supervisionName').value,
             title: document.getElementById('supervisionTitle').value,
-            image: document.getElementById('supervisionImage').value,
+            supervisors: document.getElementById('supervisionSupervisors').value,
+            date: document.getElementById('supervisionDate').value,
+            experience: document.getElementById('supervisionExperience').value,
             price: parseInt(document.getElementById('supervisionPrice').value) || 0,
             duration: document.getElementById('supervisionDuration').value,
-            experience: document.getElementById('supervisionExperience').value,
-            tags: document.getElementById('supervisionTags').value.split('\n').filter(t => t.trim()),
-            description: document.getElementById('supervisionDescription').value.split('\n\n').filter(d => d.trim()),
-            education: document.getElementById('supervisionEducation').value.split('\n').filter(e => e.trim()),
+            price_note: document.getElementById('supervisionPriceNote').value,
+            description: document.getElementById('supervisionDescription').value,
+            features: document.getElementById('supervisionFeatures').value.split('\n').filter(f => f.trim()),
+            bonus: document.getElementById('supervisionBonus').value,
             status: document.getElementById('supervisionStatus').value
         };
         

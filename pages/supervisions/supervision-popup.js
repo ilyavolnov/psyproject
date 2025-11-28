@@ -152,11 +152,123 @@ function populateSupervisionPopup(supervision) {
         document.getElementById('popupEducation').innerHTML = '';
     }
     
-    // Payment button
+    // Store supervision data for request
+    window.currentSupervision = supervision;
+    
+    // Payment button - open request form
     const payButton = document.getElementById('popupPayButton');
+    payButton.textContent = 'Записаться на супервизию';
     payButton.onclick = () => {
-        window.open('https://wa.me/79211880755', '_blank');
+        closeSupervisionPopup();
+        openSupervisionRequestForm(supervision);
     };
+}
+
+// Open request form for supervision
+function openSupervisionRequestForm(supervision) {
+    // Create form popup
+    const formPopup = document.createElement('div');
+    formPopup.className = 'consultation-popup active';
+    formPopup.id = 'supervisionRequestPopup';
+    formPopup.innerHTML = `
+        <div class="consultation-popup-overlay"></div>
+        <div class="consultation-popup-content">
+            <button class="consultation-popup-close">&times;</button>
+            <h2 class="consultation-popup-title">Запись на супервизию</h2>
+            <p class="consultation-popup-subtitle">${supervision.title}</p>
+            <p class="consultation-popup-price">${supervision.price.toLocaleString('ru-RU')} ₽</p>
+            
+            <form class="consultation-form" id="supervisionRequestForm">
+                <div class="form-group">
+                    <input type="text" name="name" placeholder="Ваше имя *" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" name="phone" placeholder="Телефон *" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <textarea name="message" placeholder="Комментарий (необязательно)" rows="4"></textarea>
+                </div>
+                <button type="submit" class="cta-button">Отправить заявку</button>
+            </form>
+        </div>
+    `;
+    
+    document.body.appendChild(formPopup);
+    document.body.style.overflow = 'hidden';
+    
+    // Close handlers
+    const closeBtn = formPopup.querySelector('.consultation-popup-close');
+    const overlay = formPopup.querySelector('.consultation-popup-overlay');
+    
+    const closeForm = () => {
+        formPopup.remove();
+        document.body.style.overflow = '';
+    };
+    
+    closeBtn.addEventListener('click', closeForm);
+    overlay.addEventListener('click', closeForm);
+    
+    // Form submit
+    const form = document.getElementById('supervisionRequestForm');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const data = {
+            name: formData.get('name'),
+            phone: formData.get('phone'),
+            email: formData.get('email'),
+            message: formData.get('message') || `Запись на супервизию: ${supervision.title}`,
+            request_type: 'supervision',
+            supervision_id: supervision.id
+        };
+        
+        try {
+            const response = await fetch('http://localhost:3001/api/requests', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                closeForm();
+                showSuccessMessage();
+            } else {
+                alert('Ошибка отправки заявки. Попробуйте позже.');
+            }
+        } catch (error) {
+            console.error('Error submitting request:', error);
+            alert('Ошибка отправки заявки. Попробуйте позже.');
+        }
+    });
+}
+
+// Show success message
+function showSuccessMessage() {
+    const successPopup = document.createElement('div');
+    successPopup.className = 'consultation-popup active';
+    successPopup.innerHTML = `
+        <div class="consultation-popup-overlay"></div>
+        <div class="consultation-popup-content" style="text-align: center; padding: 50px;">
+            <h2 style="color: #97C2EC; margin-bottom: 20px;">✓ Заявка отправлена!</h2>
+            <p style="font-size: 18px; margin-bottom: 30px;">Мы свяжемся с вами в ближайшее время</p>
+            <button class="cta-button" onclick="this.closest('.consultation-popup').remove(); document.body.style.overflow = '';">
+                Закрыть
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(successPopup);
+    
+    setTimeout(() => {
+        successPopup.remove();
+        document.body.style.overflow = '';
+    }, 3000);
 }
 
 // Load supervisions on page load

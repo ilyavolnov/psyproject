@@ -71,10 +71,22 @@ function generateCourseBlockFields(block, index) {
         case 'hero':
             return `
                 <div class="admin-form-group">
-                    <label class="admin-form-label">Изображение (URL)</label>
-                    <input type="text" class="admin-form-input course-block-field" 
-                           data-block-index="${index}" data-field="image" 
-                           value="${data.image || ''}" placeholder="https://...">
+                    <label class="admin-form-label">Изображение</label>
+                    <div class="admin-image-upload-container">
+                        <input type="text" class="admin-form-input course-block-field" 
+                               data-block-index="${index}" data-field="image" 
+                               value="${data.image || ''}" placeholder="URL изображения">
+                        <div class="admin-image-upload-buttons">
+                            <button type="button" class="admin-btn-secondary" onclick="triggerCourseBlockImageUpload(${index}, 'image')">
+                                📁 Загрузить
+                            </button>
+                            <button type="button" class="admin-btn-secondary" onclick="pasteCourseBlockImageFromClipboard(${index}, 'image')">
+                                📋 Вставить
+                            </button>
+                        </div>
+                        <input type="file" id="courseBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleCourseBlockImageUpload(event, ${index}, 'image')">
+                    </div>
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Название курса</label>
@@ -107,10 +119,22 @@ function generateCourseBlockFields(block, index) {
         case 'description':
             return `
                 <div class="admin-form-group">
-                    <label class="admin-form-label">Изображение (URL)</label>
-                    <input type="text" class="admin-form-input course-block-field" 
-                           data-block-index="${index}" data-field="image" 
-                           value="${data.image || ''}" placeholder="https://...">
+                    <label class="admin-form-label">Изображение</label>
+                    <div class="admin-image-upload-container">
+                        <input type="text" class="admin-form-input course-block-field" 
+                               data-block-index="${index}" data-field="image" 
+                               value="${data.image || ''}" placeholder="URL изображения">
+                        <div class="admin-image-upload-buttons">
+                            <button type="button" class="admin-btn-secondary" onclick="triggerCourseBlockImageUpload(${index}, 'image')">
+                                📁 Загрузить
+                            </button>
+                            <button type="button" class="admin-btn-secondary" onclick="pasteCourseBlockImageFromClipboard(${index}, 'image')">
+                                📋 Вставить
+                            </button>
+                        </div>
+                        <input type="file" id="courseBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleCourseBlockImageUpload(event, ${index}, 'image')">
+                    </div>
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Заголовок</label>
@@ -153,10 +177,22 @@ function generateCourseBlockFields(block, index) {
             const featureItems = data.items || [];
             return `
                 <div class="admin-form-group">
-                    <label class="admin-form-label">Изображение (URL)</label>
-                    <input type="text" class="admin-form-input course-block-field" 
-                           data-block-index="${index}" data-field="image" 
-                           value="${data.image || ''}" placeholder="https://...">
+                    <label class="admin-form-label">Изображение</label>
+                    <div class="admin-image-upload-container">
+                        <input type="text" class="admin-form-input course-block-field" 
+                               data-block-index="${index}" data-field="image" 
+                               value="${data.image || ''}" placeholder="URL изображения">
+                        <div class="admin-image-upload-buttons">
+                            <button type="button" class="admin-btn-secondary" onclick="triggerCourseBlockImageUpload(${index}, 'image')">
+                                📁 Загрузить
+                            </button>
+                            <button type="button" class="admin-btn-secondary" onclick="pasteCourseBlockImageFromClipboard(${index}, 'image')">
+                                📋 Вставить
+                            </button>
+                        </div>
+                        <input type="file" id="courseBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleCourseBlockImageUpload(event, ${index}, 'image')">
+                    </div>
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Позиция изображения</label>
@@ -184,10 +220,22 @@ function generateCourseBlockFields(block, index) {
             const credentials = data.credentials || [];
             return `
                 <div class="admin-form-group">
-                    <label class="admin-form-label">Фото автора (URL)</label>
-                    <input type="text" class="admin-form-input course-block-field" 
-                           data-block-index="${index}" data-field="photo" 
-                           value="${data.photo || ''}" placeholder="https://...">
+                    <label class="admin-form-label">Фото автора</label>
+                    <div class="admin-image-upload-container">
+                        <input type="text" class="admin-form-input course-block-field" 
+                               data-block-index="${index}" data-field="photo" 
+                               value="${data.photo || ''}" placeholder="URL изображения">
+                        <div class="admin-image-upload-buttons">
+                            <button type="button" class="admin-btn-secondary" onclick="triggerCourseBlockImageUpload(${index}, 'photo')">
+                                📁 Загрузить
+                            </button>
+                            <button type="button" class="admin-btn-secondary" onclick="pasteCourseBlockImageFromClipboard(${index}, 'photo')">
+                                📋 Вставить
+                            </button>
+                        </div>
+                        <input type="file" id="courseBlockImageUpload_${index}_photo" accept="image/*" style="display: none;" onchange="handleCourseBlockImageUpload(event, ${index}, 'photo')">
+                    </div>
+                    ${data.photo ? `<div class="admin-image-preview"><img src="${data.photo.startsWith('http') ? data.photo : '../../' + data.photo}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Имя автора</label>
@@ -410,3 +458,152 @@ function getDefaultCourseBlockData(type) {
 window.getCourseBlocksData = function() {
     return window.currentCourseBlocks || [];
 };
+
+// Image upload functions for course blocks
+window.triggerCourseBlockImageUpload = function(blockIndex, fieldName) {
+    const fileInput = document.getElementById(`courseBlockImageUpload_${blockIndex}_${fieldName}`);
+    if (fileInput) {
+        fileInput.click();
+    }
+};
+
+window.handleCourseBlockImageUpload = async function(event, blockIndex, fieldName) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+        alert('Пожалуйста, выберите файл изображения');
+        return;
+    }
+    
+    try {
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        const response = await fetch('http://localhost:3001/api/upload/image', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error('Ошибка загрузки изображения');
+        }
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.error || 'Ошибка загрузки');
+        }
+        
+        // Update block data
+        const blocks = window.currentCourseBlocks || [];
+        if (!blocks[blockIndex].data) {
+            blocks[blockIndex].data = {};
+        }
+        blocks[blockIndex].data[fieldName] = data.data.path;
+        window.currentCourseBlocks = blocks;
+        
+        // Update the input field directly instead of re-rendering everything
+        const inputField = document.querySelector(`input[data-block-index="${blockIndex}"][data-field="${fieldName}"]`);
+        if (inputField) {
+            inputField.value = data.data.path;
+            
+            // Add or update preview image
+            const container = inputField.closest('.admin-form-group');
+            let preview = container.querySelector('.admin-image-preview');
+            if (!preview) {
+                preview = document.createElement('div');
+                preview.className = 'admin-image-preview';
+                container.appendChild(preview);
+            }
+            const imagePath = data.data.path.startsWith('http') ? data.data.path : '../../' + data.data.path;
+            preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
+        }
+        
+        // Show success message
+        showNotification('Изображение успешно загружено', 'success');
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        alert('Ошибка при загрузке изображения: ' + error.message);
+    }
+    
+    // Reset file input
+    event.target.value = '';
+};
+
+window.pasteCourseBlockImageFromClipboard = async function(blockIndex, fieldName) {
+    try {
+        const clipboardItems = await navigator.clipboard.read();
+        
+        for (const item of clipboardItems) {
+            const imageType = item.types.find(type => type.startsWith('image/'));
+            
+            if (imageType) {
+                const blob = await item.getType(imageType);
+                
+                const formData = new FormData();
+                formData.append('image', blob, 'clipboard-image.png');
+                
+                const response = await fetch('http://localhost:3001/api/upload/image', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки изображения');
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Ошибка загрузки');
+                }
+                
+                // Update block data
+                const blocks = window.currentCourseBlocks || [];
+                if (!blocks[blockIndex].data) {
+                    blocks[blockIndex].data = {};
+                }
+                blocks[blockIndex].data[fieldName] = data.data.path;
+                window.currentCourseBlocks = blocks;
+                
+                // Update the input field directly instead of re-rendering everything
+                const inputField = document.querySelector(`input[data-block-index="${blockIndex}"][data-field="${fieldName}"]`);
+                if (inputField) {
+                    inputField.value = data.data.path;
+                    
+                    // Add or update preview image
+                    const container = inputField.closest('.admin-form-group');
+                    let preview = container.querySelector('.admin-image-preview');
+                    if (!preview) {
+                        preview = document.createElement('div');
+                        preview.className = 'admin-image-preview';
+                        container.appendChild(preview);
+                    }
+                    const imagePath = data.data.path.startsWith('http') ? data.data.path : '../../' + data.data.path;
+                    preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
+                }
+                
+                // Show success message
+                showNotification('Изображение успешно вставлено из буфера обмена', 'success');
+                return;
+            }
+        }
+        
+        alert('В буфере обмена нет изображения');
+    } catch (error) {
+        console.error('Error pasting image:', error);
+        alert('Ошибка при вставке изображения: ' + error.message);
+    }
+};
+
+// Helper function to show notifications
+function showNotification(message, type = 'info') {
+    // Check if notification function exists in admin panel
+    if (window.showAdminNotification) {
+        window.showAdminNotification(message, type);
+    } else {
+        // Fallback to alert
+        alert(message);
+    }
+}

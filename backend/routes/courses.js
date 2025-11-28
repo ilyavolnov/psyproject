@@ -2,17 +2,50 @@ const express = require('express');
 const router = express.Router();
 const { prepare, saveDatabase } = require('../database');
 
+// Generate slug from title
+function generateSlug(title) {
+    const translitMap = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
+        'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+        'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts',
+        'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+    };
+    
+    return title
+        .toLowerCase()
+        .split('')
+        .map(char => translitMap[char] || char)
+        .join('')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
 // Get all courses
 router.get('/courses', async (req, res) => {
     try {
-        const courses = await prepare('SELECT * FROM courses ORDER BY created_at DESC').all();
+        const { type } = req.query;
+        let query = 'SELECT * FROM courses';
+        const params = [];
         
-        // Parse JSON fields
-        const parsedCourses = courses.map(course => ({
-            ...course,
-            topics: course.topics ? JSON.parse(course.topics) : [],
-            has_certificate: Boolean(course.has_certificate)
-        }));
+        if (type) {
+            query += ' WHERE type = ?';
+            params.push(type);
+        }
+        
+        query += ' ORDER BY created_at DESC';
+        
+        const courses = await prepare(query).all(...params);
+        
+        // Parse JSON fields and generate slug if missing
+        const parsedCourses = courses.map(course => {
+            const slug = course.slug || generateSlug(course.title);
+            return {
+                ...course,
+                slug,
+                topics: course.topics ? JSON.parse(course.topics) : [],
+                has_certificate: Boolean(course.has_certificate)
+            };
+        });
 
         res.json({
             success: true,
@@ -23,6 +56,37 @@ router.get('/courses', async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to fetch courses'
+        });
+    }
+});
+
+// Get course by slug
+router.get('/courses/slug/:slug', async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const course = await prepare('SELECT * FROM courses WHERE slug = ?').get(slug);
+        
+        if (!course) {
+            return res.status(404).json({
+                success: false,
+                error: 'Course not found'
+            });
+        }
+
+        // Parse JSON fields
+        course.topics = course.topics ? JSON.parse(course.topics) : [];
+        course.has_certificate = Boolean(course.has_certificate);
+        // Keep page_blocks as string for frontend to parse
+
+        res.json({
+            success: true,
+            data: course
+        });
+    } catch (error) {
+        console.error('Error fetching course:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch course'
         });
     }
 });
@@ -64,7 +128,7 @@ router.post('/courses', async (req, res) => {
             title, subtitle, description, price, status, image,
             release_date, access_duration, feedback_duration,
             has_certificate, whatsapp_number, topics, bonuses,
-            materials, author_name, author_description, page_blocks
+            materials, author_name, author_description, page_blocks, type
         } = req.body;
 
         if (!title) {
@@ -79,8 +143,8 @@ router.post('/courses', async (req, res) => {
                 title, subtitle, description, price, status, image,
                 release_date, access_duration, feedback_duration,
                 has_certificate, whatsapp_number, topics, bonuses,
-                materials, author_name, author_description, page_blocks
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                materials, author_name, author_description, page_blocks, type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const result = await prepare(query).run(
@@ -89,7 +153,8 @@ router.post('/courses', async (req, res) => {
             has_certificate ? 1 : 0, whatsapp_number,
             topics ? JSON.stringify(topics) : '[]',
             bonuses, materials, author_name, author_description,
-            page_blocks || '[]'
+            page_blocks || '[]',
+            type || 'course'
         );
 
         saveDatabase();

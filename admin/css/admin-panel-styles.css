@@ -2172,3 +2172,63 @@ body.admin-panel-page {
     color: #999;
     font-size: 12px;
 }
+
+/* Image Upload Container for Course Blocks */
+.admin-image-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-image-upload-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.admin-image-upload-buttons .admin-btn-secondary {
+    flex: 1;
+    padding: 8px 16px;
+    font-size: 14px;
+    background: var(--color-beige);
+    color: var(--color-black);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.admin-image-upload-buttons .admin-btn-secondary:hover {
+    background: var(--color-blue);
+    transform: translateY(-2px);
+}
+
+.admin-image-preview {
+    margin-top: 10px;
+}
+
+.admin-image-preview img {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 8px;
+    border: 2px solid var(--color-beige);
+    object-fit: cover;
+}
+
+/* Blocks Footer with Save Button */
+.admin-blocks-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid var(--color-beige);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.admin-blocks-footer .admin-btn {
+    min-width: 200px;
+    padding: 12px 24px;
+    font-size: 16px;
+}

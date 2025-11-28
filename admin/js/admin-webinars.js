@@ -2,20 +2,20 @@
 console.log('admin-courses-certificates.js loaded');
 
 // Load Courses Page
-window.loadCourses = async function() {
-    console.log('loadCourses called');
+window.loadWebinars = async function() {
+    console.log('loadWebinars called');
     const pageTitle = document.getElementById('pageTitle');
     const pageSubtitle = document.getElementById('pageSubtitle');
     const adminContent = document.getElementById('adminContent');
     
-    pageTitle.textContent = 'Курсы';
-    pageSubtitle.textContent = 'Управление курсами и вебинарами';
+    pageTitle.textContent = 'Вебинары';
+    pageSubtitle.textContent = 'Управление вебинарами и вебинарами';
 
     // Load courses from API
     let courses = [];
     try {
         console.log('Loading courses from API...');
-        const response = await fetch('http://localhost:3001/api/courses');
+        const response = await fetch('http://localhost:3001/api/courses?type=webinar');
         const data = await response.json();
         console.log('Courses API response:', data);
         if (data.success) {
@@ -28,9 +28,9 @@ window.loadCourses = async function() {
     adminContent.innerHTML = `
         <div class="admin-section">
             <div class="admin-section-header">
-                <h2 class="admin-section-title">Список курсов (${courses.length})</h2>
+                <h2 class="admin-section-title">Список вебинаров (${courses.length})</h2>
                 <button class="admin-btn admin-btn-primary" onclick="addCourse()">
-                    ➕ Добавить курс
+                    ➕ Добавить вебинар
                 </button>
             </div>
 
@@ -69,7 +69,7 @@ window.loadCourses = async function() {
             <div class="admin-popup-overlay"></div>
             <div class="admin-popup-content wide">
                 <button class="admin-popup-close">&times;</button>
-                <h2 class="admin-popup-title" id="coursePopupTitle">Редактировать курс</h2>
+                <h2 class="admin-popup-title" id="coursePopupTitle">Редактировать вебинар</h2>
                 <div class="admin-popup-body" id="coursePopupBody">
                     <!-- Content will be loaded here -->
                 </div>
@@ -394,7 +394,7 @@ window.editCourse = async function(id) {
             }
         } catch (error) {
             console.error('Error loading course:', error);
-            await adminError('Ошибка загрузки курса');
+            await adminError('Ошибка загрузки вебинара');
             return;
         }
     }
@@ -404,7 +404,7 @@ window.editCourse = async function(id) {
 };
 
 window.deleteCourse = async function(id) {
-    const confirmed = await adminConfirm('Удалить этот курс?', 'Подтверждение удаления');
+    const confirmed = await adminConfirm('Удалить этот вебинар?', 'Подтверждение удаления');
     if (!confirmed) return;
     
     try {
@@ -416,7 +416,7 @@ window.deleteCourse = async function(id) {
         
         if (data.success) {
             await adminSuccess('Курс удален!');
-            loadCourses();
+            loadWebinars();
         } else {
             await adminError('Ошибка: ' + data.error);
         }
@@ -432,7 +432,7 @@ function openCoursePopup(course = null) {
     const title = document.getElementById('coursePopupTitle');
     const body = document.getElementById('coursePopupBody');
     
-    title.textContent = course ? `Редактировать: ${course.title}` : 'Создать новый курс';
+    title.textContent = course ? `Редактировать: ${course.title}` : 'Создать новый вебинар';
     
     const imagePath = course?.image ? (course.image.startsWith('http') ? course.image : `../../${course.image}`) : '../../images/hero-page.webp';
     
@@ -451,7 +451,7 @@ function openCoursePopup(course = null) {
         <form class="admin-form" id="courseForm">
             <div class="admin-form-row">
                 <div class="admin-form-group">
-                    <label class="admin-form-label">Название курса *</label>
+                    <label class="admin-form-label">Название вебинара *</label>
                     <input type="text" class="admin-form-input" id="courseTitle" value="${course?.title || ''}" required>
                 </div>
                 <div class="admin-form-group">
@@ -513,12 +513,12 @@ function openCoursePopup(course = null) {
             </div>
             
             <div class="admin-form-group">
-                <label class="admin-form-label">Описание курса</label>
+                <label class="admin-form-label">Описание вебинара</label>
                 <textarea class="admin-form-input" id="courseDescription" rows="4">${course?.description || ''}</textarea>
             </div>
             
             <div class="admin-form-group">
-                <label class="admin-form-label">Темы курса (по одной на строку)</label>
+                <label class="admin-form-label">Темы вебинара (по одной на строку)</label>
                 <textarea class="admin-form-input" id="courseTopics" rows="8" placeholder="Почему мы переедаем?
 Прокрастинация через еду
 Переедание выходного дня">${course?.topics ? (Array.isArray(course.topics) ? course.topics.join('\n') : course.topics) : ''}</textarea>
@@ -544,7 +544,7 @@ function openCoursePopup(course = null) {
             </div>
             
             <div class="admin-form-group">
-                <label class="admin-form-label">Автор курса</label>
+                <label class="admin-form-label">Автор вебинара</label>
                 <input type="text" class="admin-form-input" id="courseAuthorName" value="${course?.author_name || 'Маргарита Румянцева'}">
             </div>
             
@@ -563,7 +563,7 @@ function openCoursePopup(course = null) {
         <!-- Blocks Tab -->
         <div id="courseTabBlocks" class="admin-tab-content" style="display: none;">
             <div class="admin-blocks-header">
-                <h3>Блоки страницы курса</h3>
+                <h3>Блоки страницы вебинара</h3>
                 <div class="admin-block-type-buttons">
                     <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('hero')" title="Главный блок">
                         🎯 Hero
@@ -571,13 +571,13 @@ function openCoursePopup(course = null) {
                     <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('description')" title="Блок с описанием">
                         📝 Описание
                     </button>
-                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('program')" title="Программа курса">
+                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('program')" title="Программа вебинара">
                         📋 Программа
                     </button>
                     <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('features')" title="Преимущества">
                         ✨ Преимущества
                     </button>
-                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('author')" title="Автор курса">
+                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('author')" title="Автор вебинара">
                         👤 Автор
                     </button>
                 </div>
@@ -663,7 +663,8 @@ window.saveCourse = async function(courseId) {
         topics: topics,
         author_name: document.getElementById('courseAuthorName').value,
         author_description: document.getElementById('courseAuthorDescription').value,
-        page_blocks: JSON.stringify(getCourseBlocksData())
+        page_blocks: JSON.stringify(getCourseBlocksData()),
+        type: 'webinar'
     };
     
     try {
@@ -684,7 +685,7 @@ window.saveCourse = async function(courseId) {
         if (result.success) {
             await adminSuccess(`Курс ${courseId ? 'обновлен' : 'создан'} успешно!`);
             closeCoursePopup();
-            loadCourses();
+            loadWebinars();
         } else {
             await adminError('Ошибка: ' + result.error);
         }
@@ -697,7 +698,7 @@ window.saveCourse = async function(courseId) {
 // Save only course blocks
 window.saveCourseBlocks = async function(courseId) {
     if (!courseId) {
-        await adminError('Сначала сохраните основную информацию о курсе');
+        await adminError('Сначала сохраните основную информацию о вебинаре');
         return;
     }
     

@@ -18,7 +18,7 @@ async function addCourse() {
             {
                 type: 'hero',
                 data: {
-                    image: 'images/courses/rpp/mainimaje.jpeg',
+                    image: 'images/courses/rpp/mainimage.jpeg',
                     title: 'Марафон по РПП «Я больше не переедаю»',
                     price: 9900,
                     startDate: '10 НОЯБРЯ',
@@ -120,7 +120,7 @@ async function addCourse() {
             'Трансформирующий проект, направленный на коррекцию расстройств пищевого поведения при помощи доказательных психотерапевтических методик',
             9900,
             'available',
-            'images/courses/rpp/mainimaje.jpeg',
+            'images/courses/rpp/mainimage.jpeg',
             '10 НОЯБРЯ',
             '3 недели',
             'Индивидуальное сопровождение психологом команды',

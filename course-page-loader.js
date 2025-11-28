@@ -1,10 +1,11 @@
 // Course Page Loader - Renders course blocks from API
 
-// Get course ID from URL
+// Get course slug or ID from URL
 const urlParams = new URLSearchParams(window.location.search);
+const courseSlug = urlParams.get('slug');
 const courseId = urlParams.get('id');
 
-if (!courseId) {
+if (!courseSlug && !courseId) {
     document.getElementById('course-content').innerHTML = `
         <div class="error-state">
             <h2>Курс не найден</h2>
@@ -12,14 +13,29 @@ if (!courseId) {
         </div>
     `;
 } else {
-    loadCourse(courseId);
+    loadCourse(courseSlug || courseId);
 }
 
 // Load course data
-async function loadCourse(id) {
+async function loadCourse(identifier) {
     try {
-        const response = await fetch(`http://localhost:3001/api/courses/${id}`);
+        // Try to load by slug first, then by ID
+        const response = await fetch(`http://localhost:3001/api/courses/slug/${identifier}`);
         const data = await response.json();
+        
+        // If slug not found, try by ID
+        if (!data.success && !isNaN(identifier)) {
+            const idResponse = await fetch(`http://localhost:3001/api/courses/${identifier}`);
+            const idData = await idResponse.json();
+            
+            if (idData.success && idData.data) {
+                const course = idData.data;
+                document.title = `${course.title} - Маргарита Румянцева`;
+                const blocks = JSON.parse(course.page_blocks || '[]');
+                renderCourse(course, blocks);
+                return;
+            }
+        }
 
         if (data.success && data.data) {
             const course = data.data;

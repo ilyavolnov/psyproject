@@ -45,6 +45,7 @@ async function startServer() {
         app.use('/api', supervisionsRoutes);
         app.use('/api', promoCodesRoutes);
         app.use('/api', uploadRoutes);
+        app.use('/api/paykeeper', require('./routes/paykeeper'));
 
         // Health check
         app.get('/health', (req, res) => {
