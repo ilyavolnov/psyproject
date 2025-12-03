@@ -160,7 +160,21 @@ class SpecialistProfile {
         
         // If page_blocks exist in database, use them
         if (spec.page_blocks && spec.page_blocks.length > 0) {
-            return spec.page_blocks.map(block => this.renderBlock(block)).join('');
+            return spec.page_blocks
+                .filter(block => block && block.type) // Filter out invalid blocks
+                .map(block => {
+                    // Parse items if it's a JSON string
+                    if (block.items && typeof block.items === 'string') {
+                        try {
+                            block.items = JSON.parse(block.items);
+                        } catch (e) {
+                            console.warn('Failed to parse block.items:', e);
+                            block.items = [];
+                        }
+                    }
+                    return this.renderBlock(block);
+                })
+                .join('');
         }
         
         // Fallback to old structure
@@ -221,6 +235,7 @@ class SpecialistProfile {
                 `;
                 
             case 'list':
+                if (!block.items || !Array.isArray(block.items)) return '';
                 return `
                     <div class="profile-block">
                         <h3 class="profile-block-title">${block.title}</h3>
@@ -231,6 +246,7 @@ class SpecialistProfile {
                 `;
                 
             case 'payment':
+                if (!block.items || !Array.isArray(block.items)) return '';
                 return `
                     <div class="profile-block payment-block">
                         <h3 class="profile-block-title">${block.title}</h3>
