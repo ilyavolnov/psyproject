@@ -98,35 +98,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Apply promo code
     if (promoApplyBtn) {
-        promoApplyBtn.addEventListener('click', function() {
+        promoApplyBtn.addEventListener('click', async function() {
             const promoInput = document.getElementById('promoCode');
             const promoCode = promoInput.value.trim().toUpperCase();
             
-            // Example promo codes
-            const promoCodes = {
-                'FIRST10': 10, // 10% discount
-                'WELCOME': 15, // 15% discount
-                'SAVE20': 20   // 20% discount
-            };
+            if (!promoCode) {
+                alert('Введите промокод');
+                return;
+            }
             
-            if (promoCodes[promoCode] && !discountApplied) {
-                const discount = promoCodes[promoCode];
-                const newPrice = currentPrice * (1 - discount / 100);
-                
-                document.getElementById('paymentPopupPrice').innerHTML = 
-                    `<span style="text-decoration: line-through; opacity: 0.5;">${formatPrice(currentPrice)}</span> ${formatPrice(newPrice)}`;
-                
-                currentPrice = newPrice;
-                discountApplied = true;
-                
-                alert(`Промокод применен! Скидка ${discount}%`);
-                promoInput.disabled = true;
-                this.disabled = true;
-                this.textContent = 'Применено';
-            } else if (discountApplied) {
+            if (discountApplied) {
                 alert('Промокод уже применен');
-            } else {
-                alert('Неверный промокод');
+                return;
+            }
+            
+            try {
+                const API_URL = window.location.hostname === 'localhost' 
+                    ? 'http://localhost:3001/api' 
+                    : '/api';
+                
+                const response = await fetch(`${API_URL}/promo-codes/validate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code: promoCode })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const discount = result.data.discount;
+                    const newPrice = currentPrice * (1 - discount / 100);
+                    
+                    document.getElementById('paymentPopupPrice').innerHTML = 
+                        `<span style="text-decoration: line-through; opacity: 0.5;">${formatPrice(currentPrice)}</span> ${formatPrice(newPrice)}`;
+                    
+                    currentPrice = newPrice;
+                    discountApplied = true;
+                    
+                    alert(`Промокод применен! Скидка ${discount}%`);
+                    promoInput.disabled = true;
+                    this.disabled = true;
+                    this.textContent = 'Применено';
+                } else {
+                    alert(result.error || 'Неверный промокод');
+                }
+            } catch (error) {
+                console.error('Error validating promo code:', error);
+                alert('Ошибка проверки промокода. Попробуйте позже.');
             }
         });
     }
