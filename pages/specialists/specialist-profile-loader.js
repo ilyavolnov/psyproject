@@ -129,7 +129,6 @@ class SpecialistProfile {
                             <span class="meta-value">${spec.duration}</span>
                         </div>` : ''}
                     </div>
-                    <p class="profile-price-note">*стоимость онлайн-консультации</p>
                     <div class="profile-actions">
                         <button class="profile-cta-btn profile-pay-btn" ${buttonDisabled} data-price="${spec.price}" data-specialist="${spec.name}">
                             <span>Оплатить</span>
