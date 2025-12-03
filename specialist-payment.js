@@ -133,28 +133,58 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Form submission
     if (paymentForm) {
-        paymentForm.addEventListener('submit', function(e) {
+        paymentForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const formData = {
-                name: document.getElementById('paymentName').value,
-                phone: document.getElementById('paymentPhone').value,
-                email: document.getElementById('paymentEmail').value,
-                specialist: currentSpecialist,
-                price: currentPrice,
-                promoCode: document.getElementById('promoCode').value
-            };
+            const submitBtn = this.querySelector('.payment-submit-btn');
+            const originalText = submitBtn.innerHTML;
             
-            console.log('Payment form data:', formData);
-            
-            // Here you would redirect to payment system
-            // For now, show success message
-            alert(`Переход к оплате консультации с ${currentSpecialist} на сумму ${formatPrice(currentPrice)}`);
-            
-            // In production, redirect to payment:
-            // window.location.href = 'https://your-payment-system.com/pay?amount=' + currentPrice;
-            
-            closePopup();
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>Обработка...</span>';
+                
+                const formData = {
+                    name: document.getElementById('paymentName').value,
+                    phone: document.getElementById('paymentPhone').value,
+                    email: document.getElementById('paymentEmail').value,
+                    request_type: 'specialist',
+                    message: `Запись к специалисту: ${currentSpecialist}. Стоимость: ${formatPrice(currentPrice)}`,
+                    specialist_id: null // You can add specialist ID if available
+                };
+                
+                // Save request to database
+                const API_URL = window.location.hostname === 'localhost' 
+                    ? 'http://localhost:3001/api' 
+                    : '/api';
+                
+                const response = await fetch(`${API_URL}/requests`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success message
+                    alert(`✅ Заявка создана! Переход к оплате консультации с ${currentSpecialist} на сумму ${formatPrice(currentPrice)}`);
+                    
+                    // In production, redirect to payment:
+                    // window.location.href = 'https://your-payment-system.com/pay?amount=' + currentPrice;
+                    
+                    closePopup();
+                } else {
+                    throw new Error(result.error || 'Ошибка создания заявки');
+                }
+            } catch (error) {
+                console.error('Error submitting payment form:', error);
+                alert('❌ Произошла ошибка. Попробуйте позже или свяжитесь с нами по телефону.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
         });
     }
 

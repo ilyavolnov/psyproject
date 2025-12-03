@@ -101,28 +101,58 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Form submission
-    certificateForm.addEventListener('submit', function(e) {
+    certificateForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        const formData = {
-            name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            email: document.getElementById('email').value,
-            price: currentPrice
-        };
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
         
-        // Here you would typically send data to your payment system
-        console.log('Form data:', formData);
-        
-        // Redirect to payment system (replace with your actual payment URL)
-        // For now, just show an alert
-        alert('Переход к оплате сертификата на сумму ' + formatPrice(currentPrice));
-        
-        // In production, you would redirect to payment:
-        // window.location.href = 'https://your-payment-system.com/pay?amount=' + currentPrice;
-        
-        closePopup(paymentPopup);
-        certificateForm.reset();
+        try {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>Обработка...</span>';
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                request_type: 'certificate',
+                certificate_amount: currentPrice,
+                message: `Заказ подарочного сертификата на сумму ${formatPrice(currentPrice)}`
+            };
+            
+            // Save request to database
+            const API_URL = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3001/api' 
+                : '/api';
+            
+            const response = await fetch(`${API_URL}/requests`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert(`✅ Заявка создана! Переход к оплате сертификата на сумму ${formatPrice(currentPrice)}`);
+                
+                // In production, redirect to payment:
+                // window.location.href = 'https://your-payment-system.com/pay?amount=' + currentPrice;
+                
+                closePopup(paymentPopup);
+                certificateForm.reset();
+            } else {
+                throw new Error(result.error || 'Ошибка создания заявки');
+            }
+        } catch (error) {
+            console.error('Error submitting certificate form:', error);
+            alert('❌ Произошла ошибка. Попробуйте позже или свяжитесь с нами по телефону.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
     });
     
     // Burger menu

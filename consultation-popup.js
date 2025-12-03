@@ -92,16 +92,16 @@ class ConsultationPopup {
                 name: formData.get('name'),
                 phone: formData.get('phone'),
                 email: formData.get('email'),
-                requestType: formData.get('requestType'),
+                request_type: formData.get('requestType'),
                 message: formData.get('message')
             };
             
             // Send to backend
             const API_URL = window.location.hostname === 'localhost' 
-                ? 'http://localhost:3000/api' 
-                : 'https://your-backend-url.com/api';
+                ? 'http://localhost:3001/api' 
+                : '/api';
             
-            const response = await fetch(`${API_URL}/applications`, {
+            const response = await fetch(`${API_URL}/requests`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
