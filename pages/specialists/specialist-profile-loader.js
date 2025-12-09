@@ -102,10 +102,13 @@ class SpecialistProfile {
         const buttonDisabled = spec.status === 'full' ? 'disabled' : '';
         const description = spec.description || 'Описание специалиста будет добавлено позже.';
 
+        // Fix photo path - ensure it starts from root
+        const photoPath = spec.photo.startsWith('../../') ? spec.photo : `../../${spec.photo}`;
+
         this.container.innerHTML = `
             <div class="profile-header">
                 <div class="profile-photo">
-                    <img src="${spec.photo}" alt="${spec.name}">
+                    <img src="${photoPath}" alt="${spec.name}">
                     ${statusBadge}
                 </div>
                 <div class="profile-info">

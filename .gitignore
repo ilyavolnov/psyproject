@@ -7,3 +7,4 @@ backend/database.db-journal
 temp-specialist-html/
 .vercel
 database.sqlite
+.DS_Store

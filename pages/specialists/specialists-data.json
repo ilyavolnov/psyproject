@@ -1,3 +1,84 @@
 {
-  "specialists": []
+  "specialists": [
+    {
+      "id": 1,
+      "name": "Маргарита Румянцева",
+      "role": "Врач-психотерапевт, сексолог",
+      "specializations": ["Семейная терапия", "EMDR-терапия", "IFS"],
+      "experience": 15,
+      "price": 8000,
+      "status": "available",
+      "photo": "images/specialists/rumyantseva.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Анна Б.",
+      "role": "Психолог, сексолог",
+      "specializations": ["Семейная терапия", "EMDR-терапия", "Гештальт-терапия"],
+      "experience": 8,
+      "price": 6000,
+      "status": "available",
+      "photo": "images/specialists/anna_b.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Ольга П.",
+      "role": "Психолог, арт-терапевт",
+      "specializations": ["Арт-терапия", "EMDR", "Телесно-ориентированная терапия"],
+      "experience": 6,
+      "price": 5500,
+      "status": "waiting",
+      "photo": "images/specialists/olya_p.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Анастасия",
+      "role": "Психолог, супервизор",
+      "specializations": ["Детско-подростковый возраст", "Семейная терапия"],
+      "experience": 12,
+      "price": 7000,
+      "status": "full",
+      "photo": "images/specialists/anastasiya_1.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Марина М.",
+      "role": "Психолог, EMDR-терапевт",
+      "specializations": ["EMDR-терапия", "Травма", "Гештальт-терапия"],
+      "experience": 7,
+      "price": 6000,
+      "status": "available",
+      "photo": "images/specialists/marina_m.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Ульяна",
+      "role": "Психолог",
+      "specializations": ["Детско-подростковый возраст", "Тревожность", "Депрессия"],
+      "experience": 4,
+      "price": 4500,
+      "status": "available",
+      "photo": "images/specialists/ulyana.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Ольга",
+      "role": "Психолог",
+      "specializations": ["Семейная терапия", "Гештальт-терапия"],
+      "experience": 5,
+      "price": 5000,
+      "status": "waiting",
+      "photo": "images/specialists/olga_1.jpeg"
+    },
+    {
+      "id": 8,
+      "name": "Маргарита",
+      "role": "Психолог",
+      "specializations": ["Когнитивно-поведенческая терапия", "Депрессия", "Тревожные расстройства"],
+      "experience": 9,
+      "price": 6500,
+      "status": "available",
+      "photo": "images/specialists/margarita_m.jpg"
+    }
+  ]
 }
