@@ -1,60 +1,60 @@
-// Courses and Certificates Management
-console.log('admin-courses-certificates.js loaded');
+// Webinars Management
+console.log('admin-webinars.js loaded');
 
-// Load Courses Page
+// Load Webinars Page
 window.loadWebinars = async function() {
     console.log('loadWebinars called');
     const pageTitle = document.getElementById('pageTitle');
     const pageSubtitle = document.getElementById('pageSubtitle');
     const adminContent = document.getElementById('adminContent');
-    
-    pageTitle.textContent = 'Вебинары';
-    pageSubtitle.textContent = 'Управление вебинарами и вебинарами';
 
-    // Load courses from API
-    let courses = [];
+    pageTitle.textContent = 'Вебинары';
+    pageSubtitle.textContent = 'Управление вебинарами';
+
+    // Load webinars from API
+    let webinars = [];
     try {
-        console.log('Loading courses from API...');
+        console.log('Loading webinars from API...');
         const response = await fetch('http://localhost:3001/api/courses?type=webinar');
         const data = await response.json();
-        console.log('Courses API response:', data);
+        console.log('Webinars API response:', data);
         if (data.success) {
-            courses = data.data;
+            webinars = data.data;
         }
     } catch (error) {
-        console.error('Error loading courses:', error);
+        console.error('Error loading webinars:', error);
     }
 
     adminContent.innerHTML = `
         <div class="admin-section">
             <div class="admin-section-header">
-                <h2 class="admin-section-title">Список вебинаров (${courses.length})</h2>
-                <button class="admin-btn admin-btn-primary" onclick="addCourse()">
+                <h2 class="admin-section-title">Список вебинаров (${webinars.length})</h2>
+                <button class="admin-btn admin-btn-primary" onclick="addWebinar()">
                     ➕ Добавить вебинар
                 </button>
             </div>
 
             <div class="admin-courses-grid">
-                ${courses.map(course => {
-                    const imagePath = course.image ? (course.image.startsWith('http') ? course.image : `../../${course.image}`) : '../../images/hero-page.webp';
+                ${webinars.map(webinar => {
+                    const imagePath = webinar.image ? (webinar.image.startsWith('http') ? webinar.image : `../../${webinar.image}`) : '../../images/hero-page.webp';
                     return `
                     <div class="admin-course-card">
                         <div class="admin-course-image">
-                            <img src="${imagePath}" alt="${course.title}" onerror="this.src='../../images/hero-page.webp'">
+                            <img src="${imagePath}" alt="${webinar.title}" onerror="this.src='../../images/hero-page.webp'">
                         </div>
                         <div class="admin-course-info">
-                            <h3 class="admin-course-title">${course.title}</h3>
-                            <p class="admin-course-description">${course.subtitle || course.description || ''}</p>
+                            <h3 class="admin-course-title">${webinar.title}</h3>
+                            <p class="admin-course-description">${webinar.subtitle || webinar.description || ''}</p>
                             <div class="admin-course-meta">
-                                <span>💰 ${course.price ? course.price.toLocaleString('ru-RU') + ' ₽' : 'Бесплатно'}</span>
-                                <span>📅 ${course.release_date || 'Не указано'}</span>
+                                <span>💰 ${webinar.price ? webinar.price.toLocaleString('ru-RU') + ' ₽' : 'Бесплатно'}</span>
+                                <span>📅 ${webinar.release_date || 'Не указано'}</span>
                             </div>
                         </div>
                         <div class="admin-course-actions">
-                            <button class="admin-btn admin-btn-secondary" onclick="editCourse(${course.id})">
+                            <button class="admin-btn admin-btn-secondary" onclick="editWebinar(${webinar.id})">
                                 ✏️ Редактировать
                             </button>
-                            <button class="admin-btn admin-btn-danger" onclick="deleteCourse(${course.id})">
+                            <button class="admin-btn admin-btn-danger" onclick="deleteWebinar(${webinar.id})">
                                 🗑️ Удалить
                             </button>
                         </div>
@@ -64,20 +64,20 @@ window.loadWebinars = async function() {
             </div>
         </div>
 
-        <!-- Edit Course Popup -->
-        <div class="admin-popup" id="coursePopup">
+        <!-- Edit Webinar Popup -->
+        <div class="admin-popup" id="webinarPopup">
             <div class="admin-popup-overlay"></div>
             <div class="admin-popup-content wide">
                 <button class="admin-popup-close">&times;</button>
-                <h2 class="admin-popup-title" id="coursePopupTitle">Редактировать вебинар</h2>
-                <div class="admin-popup-body" id="coursePopupBody">
+                <h2 class="admin-popup-title" id="webinarPopupTitle">Редактировать вебинар</h2>
+                <div class="admin-popup-body" id="webinarPopupBody">
                     <!-- Content will be loaded here -->
                 </div>
             </div>
         </div>
     `;
 
-    window.coursesData = courses;
+    window.webinarsData = webinars;
 };
 
 
@@ -377,241 +377,241 @@ window.filterCertificates = function() {
     `).join('');
 };
 
-// Course Functions
-window.addCourse = function() {
-    openCoursePopup();
+// Webinar Functions
+window.addWebinar = function() {
+    openWebinarPopup();
 };
 
-window.editCourse = async function(id) {
-    let course = window.coursesData.find(c => c.id === id);
-    
-    if (!course) {
+window.editWebinar = async function(id) {
+    let webinar = window.webinarsData.find(w => w.id === id);
+
+    if (!webinar) {
         try {
             const response = await fetch(`http://localhost:3001/api/courses/${id}`);
             const data = await response.json();
             if (data.success) {
-                course = data.data;
+                webinar = data.data;
             }
         } catch (error) {
-            console.error('Error loading course:', error);
+            console.error('Error loading webinar:', error);
             await adminError('Ошибка загрузки вебинара');
             return;
         }
     }
-    
-    if (!course) return;
-    openCoursePopup(course);
+
+    if (!webinar) return;
+    openWebinarPopup(webinar);
 };
 
-window.deleteCourse = async function(id) {
+window.deleteWebinar = async function(id) {
     const confirmed = await adminConfirm('Удалить этот вебинар?', 'Подтверждение удаления');
     if (!confirmed) return;
-    
+
     try {
         const response = await fetch(`http://localhost:3001/api/courses/${id}`, {
             method: 'DELETE'
         });
-        
+
         const data = await response.json();
-        
+
         if (data.success) {
-            await adminSuccess('Курс удален!');
+            await adminSuccess('Вебинар удален!');
             loadWebinars();
         } else {
             await adminError('Ошибка: ' + data.error);
         }
     } catch (error) {
-        console.error('Error deleting course:', error);
+        console.error('Error deleting webinar:', error);
         await adminError('Ошибка удаления: ' + error.message);
     }
 };
 
 
-function openCoursePopup(course = null) {
-    const popup = document.getElementById('coursePopup');
-    const title = document.getElementById('coursePopupTitle');
-    const body = document.getElementById('coursePopupBody');
-    
-    title.textContent = course ? `Редактировать: ${course.title}` : 'Создать новый вебинар';
-    
-    const imagePath = course?.image ? (course.image.startsWith('http') ? course.image : `../../${course.image}`) : '../../images/hero-page.webp';
-    
-    // Store current course for blocks
-    window.currentEditingCourse = course;
-    
+function openWebinarPopup(webinar = null) {
+    const popup = document.getElementById('webinarPopup');
+    const title = document.getElementById('webinarPopupTitle');
+    const body = document.getElementById('webinarPopupBody');
+
+    title.textContent = webinar ? `Редактировать: ${webinar.title}` : 'Создать новый вебинар';
+
+    const imagePath = webinar?.image ? (webinar.image.startsWith('http') ? webinar.image : `../../${webinar.image}`) : '../../images/hero-page.webp';
+
+    // Store current webinar for blocks
+    window.currentEditingWebinar = webinar;
+
     body.innerHTML = `
         <!-- Tabs -->
         <div class="admin-tabs" style="margin-bottom: 20px;">
-            <button class="admin-tab active" data-tab="main" onclick="switchCourseTab('main')">Основное</button>
-            <button class="admin-tab" data-tab="blocks" onclick="switchCourseTab('blocks')">Блоки страницы</button>
+            <button class="admin-tab active" data-tab="main" onclick="switchWebinarTab('main')">Основное</button>
+            <button class="admin-tab" data-tab="blocks" onclick="switchWebinarTab('blocks')">Блоки страницы</button>
         </div>
-        
+
         <!-- Main Tab -->
-        <div id="courseTabMain" class="admin-tab-content active">
-        <form class="admin-form" id="courseForm">
+        <div id="webinarTabMain" class="admin-tab-content active">
+        <form class="admin-form" id="webinarForm">
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label class="admin-form-label">Название вебинара *</label>
-                    <input type="text" class="admin-form-input" id="courseTitle" value="${course?.title || ''}" required>
+                    <input type="text" class="admin-form-input" id="webinarTitle" value="${webinar?.title || ''}" required>
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Подзаголовок</label>
-                    <input type="text" class="admin-form-input" id="courseSubtitle" value="${course?.subtitle || ''}">
+                    <input type="text" class="admin-form-input" id="webinarSubtitle" value="${webinar?.subtitle || ''}">
                 </div>
             </div>
-            
+
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label class="admin-form-label">Цена (₽) *</label>
-                    <input type="number" class="admin-form-input" id="coursePrice" value="${course?.price || ''}" required>
+                    <input type="number" class="admin-form-input" id="webinarPrice" value="${webinar?.price || ''}" required>
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Статус</label>
-                    <select class="admin-form-input" id="courseStatus">
-                        <option value="available" ${course?.status === 'available' ? 'selected' : ''}>Доступен</option>
-                        <option value="coming_soon" ${course?.status === 'coming_soon' ? 'selected' : ''}>Скоро</option>
-                        <option value="sold_out" ${course?.status === 'sold_out' ? 'selected' : ''}>Продано</option>
+                    <select class="admin-form-input" id="webinarStatus">
+                        <option value="available" ${webinar?.status === 'available' ? 'selected' : ''}>Доступен</option>
+                        <option value="coming_soon" ${webinar?.status === 'coming_soon' ? 'selected' : ''}>Скоро</option>
+                        <option value="sold_out" ${webinar?.status === 'sold_out' ? 'selected' : ''}>Продано</option>
                     </select>
                 </div>
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-form-label">Изображение</label>
                 <div class="admin-photo-upload">
-                    <img src="${imagePath}" alt="Preview" id="courseImagePreview" class="admin-photo-preview" onerror="this.src='../../images/hero-page.webp'">
+                    <img src="${imagePath}" alt="Preview" id="webinarImagePreview" class="admin-photo-preview" onerror="this.src='../../images/hero-page.webp'">
                     <div class="admin-photo-controls">
-                        <input type="file" id="coursePhotoFile" accept="image/*" style="display: none;" onchange="handleCoursePhotoUpload(event)">
-                        <button type="button" class="admin-btn admin-btn-secondary" onclick="document.getElementById('coursePhotoFile').click()">
+                        <input type="file" id="webinarPhotoFile" accept="image/*" style="display: none;" onchange="handleWebinarPhotoUpload(event)">
+                        <button type="button" class="admin-btn admin-btn-secondary" onclick="document.getElementById('webinarPhotoFile').click()">
                             📁 Загрузить файл
                         </button>
-                        <input type="text" class="admin-form-input" id="courseImage" value="${course?.image || ''}" placeholder="или введите URL изображения">
+                        <input type="text" class="admin-form-input" id="webinarImage" value="${webinar?.image || ''}" placeholder="или введите URL изображения">
                     </div>
                 </div>
             </div>
-            
+
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label class="admin-form-label">Дата старта (для отображения)</label>
-                    <input type="text" class="admin-form-input" id="courseReleaseDate" value="${course?.release_date || ''}" placeholder="10 НОЯБРЯ">
+                    <input type="text" class="admin-form-input" id="webinarReleaseDate" value="${webinar?.release_date || ''}" placeholder="10 НОЯБРЯ">
                     <small style="color: #999; font-size: 12px;">Текст для отображения, например "10 НОЯБРЯ"</small>
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Дата старта (для счетчика)</label>
-                    <input type="datetime-local" class="admin-form-input" id="courseStartDate" value="${course?.start_date || ''}">
+                    <input type="datetime-local" class="admin-form-input" id="webinarStartDate" value="${webinar?.start_date || ''}">
                     <small style="color: #999; font-size: 12px;">Точная дата и время для обратного отсчета</small>
                 </div>
             </div>
-            
+
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label class="admin-form-label">WhatsApp номер</label>
-                    <input type="text" class="admin-form-input" id="courseWhatsapp" value="${course?.whatsapp_number || ''}" placeholder="89211880755">
+                    <input type="text" class="admin-form-input" id="webinarWhatsapp" value="${webinar?.whatsapp_number || ''}" placeholder="89211880755">
                 </div>
                 <div class="admin-form-group">
                     <!-- Empty for layout -->
                 </div>
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-form-label">Описание вебинара</label>
-                <textarea class="admin-form-input" id="courseDescription" rows="4">${course?.description || ''}</textarea>
+                <textarea class="admin-form-input" id="webinarDescription" rows="4">${webinar?.description || ''}</textarea>
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-form-label">Темы вебинара (по одной на строку)</label>
-                <textarea class="admin-form-input" id="courseTopics" rows="8" placeholder="Почему мы переедаем?
+                <textarea class="admin-form-input" id="webinarTopics" rows="8" placeholder="Почему мы переедаем?
 Прокрастинация через еду
-Переедание выходного дня">${course?.topics ? (Array.isArray(course.topics) ? course.topics.join('\n') : course.topics) : ''}</textarea>
+Переедание выходного дня">${webinar?.topics ? (Array.isArray(webinar.topics) ? webinar.topics.join('\n') : webinar.topics) : ''}</textarea>
             </div>
-            
+
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label class="admin-form-label">Длительность доступа</label>
-                    <input type="text" class="admin-form-input" id="courseAccessDuration" value="${course?.access_duration || ''}" placeholder="3 недели">
+                    <input type="text" class="admin-form-input" id="webinarAccessDuration" value="${webinar?.access_duration || ''}" placeholder="3 недели">
                 </div>
                 <div class="admin-form-group">
                     <label class="admin-form-label">Обратная связь</label>
-                    <input type="text" class="admin-form-input" id="courseFeedbackDuration" value="${course?.feedback_duration || ''}" placeholder="Индивидуальное сопровождение">
+                    <input type="text" class="admin-form-input" id="webinarFeedbackDuration" value="${webinar?.feedback_duration || ''}" placeholder="Индивидуальное сопровождение">
                 </div>
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-toggle-label">
-                    <input type="checkbox" id="courseHasCertificate" class="admin-toggle-input" ${course?.has_certificate ? 'checked' : ''}>
+                    <input type="checkbox" id="webinarHasCertificate" class="admin-toggle-input" ${webinar?.has_certificate ? 'checked' : ''}>
                     <span class="admin-toggle-slider"></span>
                     <span class="admin-toggle-text">Выдается сертификат</span>
                 </label>
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-form-label">Автор вебинара</label>
-                <input type="text" class="admin-form-input" id="courseAuthorName" value="${course?.author_name || 'Маргарита Румянцева'}">
+                <input type="text" class="admin-form-input" id="webinarAuthorName" value="${webinar?.author_name || 'Маргарита Румянцева'}">
             </div>
-            
+
             <div class="admin-form-group">
                 <label class="admin-form-label">Описание автора</label>
-                <textarea class="admin-form-input" id="courseAuthorDescription" rows="6">${course?.author_description || 'Врач-психиатр, психотерапевт, сексолог (стаж с 2009 г.)'}</textarea>
+                <textarea class="admin-form-input" id="webinarAuthorDescription" rows="6">${webinar?.author_description || 'Врач-психиатр, психотерапевт, сексолог (стаж с 2009 г.)'}</textarea>
             </div>
-            
+
             <div class="admin-form-actions">
-                <button type="button" class="admin-btn admin-btn-secondary" onclick="closeCoursePopup()">Отмена</button>
-                <button type="submit" class="admin-btn admin-btn-primary">💾 ${course ? 'Сохранить' : 'Создать'}</button>
+                <button type="button" class="admin-btn admin-btn-secondary" onclick="closeWebinarPopup()">Отмена</button>
+                <button type="submit" class="admin-btn admin-btn-primary">💾 ${webinar ? 'Сохранить' : 'Создать'}</button>
             </div>
         </form>
         </div>
-        
+
         <!-- Blocks Tab -->
-        <div id="courseTabBlocks" class="admin-tab-content" style="display: none;">
+        <div id="webinarTabBlocks" class="admin-tab-content" style="display: none;">
             <div class="admin-blocks-header">
                 <h3>Блоки страницы вебинара</h3>
                 <div class="admin-block-type-buttons">
-                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('hero')" title="Главный блок">
+                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addWebinarBlock('hero')" title="Главный блок">
                         🎯 Hero
                     </button>
-                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('description')" title="Блок с описанием">
+                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addWebinarBlock('description')" title="Блок с описанием">
                         📝 Описание
                     </button>
-                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('program')" title="Программа вебинара">
+                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addWebinarBlock('program')" title="Программа вебинара">
                         📋 Программа
                     </button>
-                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('features')" title="Преимущества">
+                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addWebinarBlock('features')" title="Преимущества">
                         ✨ Преимущества
                     </button>
-                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addCourseBlock('author')" title="Автор вебинара">
+                    <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="addWebinarBlock('author')" title="Автор вебинара">
                         👤 Автор
                     </button>
                 </div>
             </div>
-            <div id="courseBlocksContainer" class="admin-blocks-container">
+            <div id="webinarBlocksContainer" class="admin-blocks-container">
                 <!-- Blocks will be rendered here -->
             </div>
             <div class="admin-blocks-footer">
-                <button type="button" class="admin-btn admin-btn-primary" onclick="saveCourseBlocks(${course?.id})">
+                <button type="button" class="admin-btn admin-btn-primary" onclick="saveWebinarBlocks(${webinar?.id})">
                     💾 Сохранить блоки
                 </button>
             </div>
         </div>
     `;
-    
+
     popup.classList.add('active');
-    
-    // Initialize course blocks
-    const existingBlocks = course?.page_blocks ? JSON.parse(course.page_blocks) : [];
-    initCourseBlocks(existingBlocks);
-    
+
+    // Initialize webinar blocks
+    const existingBlocks = webinar?.page_blocks ? JSON.parse(webinar.page_blocks) : [];
+    initWebinarBlocks(existingBlocks);
+
     // Close handlers
-    popup.querySelector('.admin-popup-overlay').addEventListener('click', closeCoursePopup);
-    popup.querySelector('.admin-popup-close').addEventListener('click', closeCoursePopup);
-    
+    popup.querySelector('.admin-popup-overlay').addEventListener('click', closeWebinarPopup);
+    popup.querySelector('.admin-popup-close').addEventListener('click', closeWebinarPopup);
+
     // Form handler
-    document.getElementById('courseForm').addEventListener('submit', function(e) {
+    document.getElementById('webinarForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        saveCourse(course?.id);
+        saveWebinar(webinar?.id);
     });
-    
+
     // Image preview update
-    document.getElementById('courseImage').addEventListener('input', function(e) {
-        const preview = document.getElementById('courseImagePreview');
+    document.getElementById('webinarImage').addEventListener('input', function(e) {
+        const preview = document.getElementById('webinarImagePreview');
         const value = e.target.value;
         if (value) {
             preview.src = value.startsWith('http') ? value : `../../${value}`;
@@ -619,116 +619,116 @@ function openCoursePopup(course = null) {
     });
 }
 
-// Switch course tabs
-window.switchCourseTab = function(tabName) {
+// Switch webinar tabs
+window.switchWebinarTab = function(tabName) {
     // Update tab buttons
     document.querySelectorAll('.admin-tab').forEach(tab => {
         tab.classList.remove('active');
     });
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-    
+
     // Update tab content
     document.querySelectorAll('.admin-tab-content').forEach(content => {
         content.style.display = 'none';
     });
-    
+
     if (tabName === 'main') {
-        document.getElementById('courseTabMain').style.display = 'block';
+        document.getElementById('webinarTabMain').style.display = 'block';
     } else if (tabName === 'blocks') {
-        document.getElementById('courseTabBlocks').style.display = 'block';
+        document.getElementById('webinarTabBlocks').style.display = 'block';
     }
 };
 
-window.closeCoursePopup = function() {
-    document.getElementById('coursePopup').classList.remove('active');
+window.closeWebinarPopup = function() {
+    document.getElementById('webinarPopup').classList.remove('active');
 };
 
-window.saveCourse = async function(courseId) {
-    const topicsText = document.getElementById('courseTopics').value;
+window.saveWebinar = async function(webinarId) {
+    const topicsText = document.getElementById('webinarTopics').value;
     const topics = topicsText.split('\n').filter(t => t.trim()).map(t => t.trim());
-    
+
     const data = {
-        title: document.getElementById('courseTitle').value,
-        subtitle: document.getElementById('courseSubtitle').value,
-        description: document.getElementById('courseDescription').value,
-        price: parseInt(document.getElementById('coursePrice').value),
-        status: document.getElementById('courseStatus').value,
-        image: document.getElementById('courseImage').value,
-        release_date: document.getElementById('courseReleaseDate').value,
-        start_date: document.getElementById('courseStartDate').value,
-        access_duration: document.getElementById('courseAccessDuration').value,
-        feedback_duration: document.getElementById('courseFeedbackDuration').value,
-        has_certificate: document.getElementById('courseHasCertificate').checked,
-        whatsapp_number: document.getElementById('courseWhatsapp').value,
+        title: document.getElementById('webinarTitle').value,
+        subtitle: document.getElementById('webinarSubtitle').value,
+        description: document.getElementById('webinarDescription').value,
+        price: parseInt(document.getElementById('webinarPrice').value),
+        status: document.getElementById('webinarStatus').value,
+        image: document.getElementById('webinarImage').value,
+        release_date: document.getElementById('webinarReleaseDate').value,
+        start_date: document.getElementById('webinarStartDate').value,
+        access_duration: document.getElementById('webinarAccessDuration').value,
+        feedback_duration: document.getElementById('webinarFeedbackDuration').value,
+        has_certificate: document.getElementById('webinarHasCertificate').checked,
+        whatsapp_number: document.getElementById('webinarWhatsapp').value,
         topics: topics,
-        author_name: document.getElementById('courseAuthorName').value,
-        author_description: document.getElementById('courseAuthorDescription').value,
-        page_blocks: JSON.stringify(getCourseBlocksData()),
+        author_name: document.getElementById('webinarAuthorName').value,
+        author_description: document.getElementById('webinarAuthorDescription').value,
+        page_blocks: JSON.stringify(getWebinarBlocksData()),
         type: 'webinar'
     };
-    
+
     try {
-        const url = courseId ? 
-            `http://localhost:3001/api/courses/${courseId}` : 
+        const url = webinarId ?
+            `http://localhost:3001/api/courses/${webinarId}` :
             'http://localhost:3001/api/courses';
-        
-        const method = courseId ? 'PUT' : 'POST';
-        
+
+        const method = webinarId ? 'PUT' : 'POST';
+
         const response = await fetch(url, {
             method: method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
-            await adminSuccess(`Курс ${courseId ? 'обновлен' : 'создан'} успешно!`);
-            closeCoursePopup();
+            await adminSuccess(`Вебинар ${webinarId ? 'обновлен' : 'создан'} успешно!`);
+            closeWebinarPopup();
             loadWebinars();
         } else {
             await adminError('Ошибка: ' + result.error);
         }
     } catch (error) {
-        console.error('Error saving course:', error);
+        console.error('Error saving webinar:', error);
         await adminError('Ошибка сохранения: ' + error.message);
     }
 };
 
-// Save only course blocks
-window.saveCourseBlocks = async function(courseId) {
-    if (!courseId) {
+// Save only webinar blocks
+window.saveWebinarBlocks = async function(webinarId) {
+    if (!webinarId) {
         await adminError('Сначала сохраните основную информацию о вебинаре');
         return;
     }
-    
-    const blocksData = getCourseBlocksData();
-    
+
+    const blocksData = getWebinarBlocksData();
+
     try {
-        const response = await fetch(`http://localhost:3001/api/courses/${courseId}`, {
+        const response = await fetch(`http://localhost:3001/api/courses/${webinarId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 page_blocks: JSON.stringify(blocksData)
             })
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             await adminSuccess('Блоки страницы сохранены успешно!');
         } else {
             await adminError('Ошибка: ' + result.error);
         }
     } catch (error) {
-        console.error('Error saving course blocks:', error);
+        console.error('Error saving webinar blocks:', error);
         await adminError('Ошибка сохранения блоков: ' + error.message);
     }
 };
 
 
-// Photo upload handler for courses
-window.handleCoursePhotoUpload = async function (event) {
+// Photo upload handler for webinars
+window.handleWebinarPhotoUpload = async function (event) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -745,10 +745,10 @@ window.handleCoursePhotoUpload = async function (event) {
     }
 
     // Show loading state
-    const preview = document.getElementById('courseImagePreview');
-    const photoInput = document.getElementById('courseImage');
+    const preview = document.getElementById('webinarImagePreview');
+    const photoInput = document.getElementById('webinarImage');
     const originalSrc = preview?.src;
-    
+
     if (preview) {
         preview.style.opacity = '0.5';
     }
@@ -774,7 +774,7 @@ window.handleCoursePhotoUpload = async function (event) {
             if (photoInput) {
                 photoInput.value = result.data.path;
             }
-            
+
             await adminSuccess('Фото загружено успешно!');
         } else {
             throw new Error(result.error || 'Upload failed');
@@ -782,12 +782,611 @@ window.handleCoursePhotoUpload = async function (event) {
     } catch (error) {
         console.error('Upload error:', error);
         await adminError('Ошибка загрузки: ' + error.message);
-        
+
         // Restore original preview
         if (preview && originalSrc) {
             preview.src = originalSrc;
             preview.style.opacity = '1';
         }
+    }
+};
+
+// Webinar-specific block functions
+window.initWebinarBlocks = function(existingBlocks = []) {
+    window.currentWebinarBlocks = existingBlocks.length > 0 ? existingBlocks : [];
+    renderWebinarBlocks();
+};
+
+// Render webinar blocks
+function renderWebinarBlocks() {
+    const container = document.getElementById('webinarBlocksContainer');
+    if (!container) return;
+
+    const blocks = window.currentWebinarBlocks || [];
+
+    if (blocks.length === 0) {
+        container.innerHTML = `
+            <div class="admin-empty-state">
+                <p>Блоки не добавлены. Выберите тип блока выше.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = blocks.map((block, index) => generateWebinarBlockEditor(block, index)).join('');
+
+    // Attach event listeners for field updates
+    attachWebinarBlockFieldListeners();
+}
+
+// Generate block HTML for editing
+function generateWebinarBlockEditor(block, index) {
+    const blockType = getWebinarBlockType(block.type);
+
+    return `
+        <div class="admin-block-item" data-block-index="${index}" draggable="false">
+            <div class="admin-block-header">
+                <div class="admin-block-drag-handle" draggable="true" title="Перетащите для изменения порядка">⋮⋮</div>
+                <span class="admin-block-icon">${blockType.icon}</span>
+                <span class="admin-block-type-name">${blockType.name}</span>
+                <div class="admin-block-actions">
+                    <button type="button" class="admin-block-move-up-btn" onclick="moveWebinarBlockUp(${index})" ${index === 0 ? 'disabled' : ''} title="Переместить вверх">
+                        ↑
+                    </button>
+                    <button type="button" class="admin-block-move-down-btn" onclick="moveWebinarBlockDown(${index})" title="Переместить вниз">
+                        ↓
+                    </button>
+                    <button type="button" class="admin-block-toggle-btn" onclick="toggleWebinarBlock(${index})" title="Свернуть/Развернуть">
+                        <span class="toggle-icon">▼</span>
+                    </button>
+                    <button type="button" class="admin-block-delete-btn" onclick="deleteWebinarBlock(${index})" title="Удалить блок">
+                        ✕
+                    </button>
+                </div>
+            </div>
+            <div class="admin-block-body" id="webinarBlockBody${index}">
+                ${generateWebinarBlockFields(block, index)}
+            </div>
+        </div>
+    `;
+}
+
+// Get webinar-specific block type with proper naming
+function getWebinarBlockType(type) {
+    const baseTypes = {
+        hero: {
+            name: 'Главный блок (Hero)',
+            icon: '🎯'
+        },
+        description: {
+            name: 'Описание',
+            icon: '📝'
+        },
+        program: {
+            name: 'Программа вебинара',
+            icon: '📋'
+        },
+        features: {
+            name: 'Преимущества',
+            icon: '✨'
+        },
+        author: {
+            name: 'Автор вебинара',
+            icon: '👤'
+        }
+    };
+
+    return baseTypes[type] || { name: 'Неизвестный блок', icon: '📄' };
+}
+
+// Generate fields based on block type for webinars
+function generateWebinarBlockFields(block, index) {
+    const type = block.type;
+    const data = block.data || {};
+
+    switch(type) {
+        case 'hero':
+            return `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Изображение</label>
+                    <div class="admin-image-upload-container">
+                        <input type="text" class="admin-form-input webinar-block-field"
+                               data-block-index="${index}" data-field="image"
+                               value="${data.image || ''}" placeholder="URL изображения">
+                        <div class="admin-image-upload-buttons">
+                            <button type="button" class="admin-btn-secondary" onclick="triggerWebinarBlockImageUpload(${index}, 'image')">
+                                📁 Загрузить
+                            </button>
+                            <button type="button" class="admin-btn-secondary" onclick="pasteWebinarBlockImageFromClipboard(${index}, 'image')">
+                                📋 Вставить
+                            </button>
+                        </div>
+                        <input type="file" id="webinarBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleWebinarBlockImageUpload(event, ${index}, 'image')">
+                    </div>
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Название вебинара</label>
+                    <input type="text" class="admin-form-input webinar-block-field"
+                           data-block-index="${index}" data-field="title"
+                           value="${data.title || ''}" placeholder="Название вебинара">
+                </div>
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Цена (₽)</label>
+                        <input type="number" class="admin-form-input webinar-block-field"
+                               data-block-index="${index}" data-field="price"
+                               value="${data.price || 0}">
+                    </div>
+                    <div class="admin-form-group">
+                        <label class="admin-form-label">Дата старта</label>
+                        <input type="text" class="admin-form-input webinar-block-field"
+                               data-block-index="${index}" data-field="startDate"
+                               value="${data.startDate || ''}" placeholder="10 ноября">
+                    </div>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Инструкция по оплате</label>
+                    <textarea class="admin-form-input webinar-block-field" rows="3"
+                              data-block-index="${index}" data-field="paymentInstructions"
+                              placeholder="Инструкция по оплате">${data.paymentInstructions || ''}</textarea>
+                </div>
+            `;
+
+        case 'description':
+            return `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Изображение</label>
+                    <div class="admin-image-upload-container">
+                        <input type="text" class="admin-form-input webinar-block-field"
+                               data-block-index="${index}" data-field="image"
+                               value="${data.image || ''}" placeholder="URL изображения">
+                        <div class="admin-image-upload-buttons">
+                            <button type="button" class="admin-btn-secondary" onclick="triggerWebinarBlockImageUpload(${index}, 'image')">
+                                📁 Загрузить
+                            </button>
+                            <button type="button" class="admin-btn-secondary" onclick="pasteWebinarBlockImageFromClipboard(${index}, 'image')">
+                                📋 Вставить
+                            </button>
+                        </div>
+                        <input type="file" id="webinarBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleWebinarBlockImageUpload(event, ${index}, 'image')">
+                    </div>
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Заголовок</label>
+                    <input type="text" class="admin-form-input webinar-block-field"
+                           data-block-index="${index}" data-field="title"
+                           value="${data.title || ''}" placeholder="Заголовок">
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Подзаголовок/Описание</label>
+                    <textarea class="admin-form-input webinar-block-field" rows="3"
+                              data-block-index="${index}" data-field="subtitle"
+                              placeholder="Описание">${data.subtitle || ''}</textarea>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Тип контента</label>
+                    <input type="text" class="admin-form-input webinar-block-field"
+                           data-block-index="${index}" data-field="contentType"
+                           value="${data.contentType || ''}" placeholder="Лекция + презентация">
+                </div>
+            `;
+
+        case 'program':
+            const programItems = data.items || [];
+            return `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Заголовок блока</label>
+                    <input type="text" class="admin-form-input webinar-block-field"
+                           data-block-index="${index}" data-field="title"
+                           value="${data.title || 'Программа вебинара'}" placeholder="Заголовок">
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Пункты программы (по одному на строку)</label>
+                    <textarea class="admin-form-input webinar-block-field" rows="8"
+                              data-block-index="${index}" data-field="items"
+                              placeholder="Пункт 1\nПункт 2\nПункт 3">${programItems.map(item => typeof item === 'string' ? item : item.text).join('\n')}</textarea>
+                </div>
+            `;
+
+        case 'features':
+            const featureItems = data.items || [];
+            return `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Изображение</label>
+                    <div class="admin-image-upload-container">
+                        <input type="text" class="admin-form-input webinar-block-field"
+                               data-block-index="${index}" data-field="image"
+                               value="${data.image || ''}" placeholder="URL изображения">
+                        <div class="admin-image-upload-buttons">
+                            <button type="button" class="admin-btn-secondary" onclick="triggerWebinarBlockImageUpload(${index}, 'image')">
+                                📁 Загрузить
+                            </button>
+                            <button type="button" class="admin-btn-secondary" onclick="pasteWebinarBlockImageFromClipboard(${index}, 'image')">
+                                📋 Вставить
+                            </button>
+                        </div>
+                        <input type="file" id="webinarBlockImageUpload_${index}_image" accept="image/*" style="display: none;" onchange="handleWebinarBlockImageUpload(event, ${index}, 'image')">
+                    </div>
+                    ${data.image ? `<div class="admin-image-preview"><img src="${data.image.startsWith('http') ? data.image : '../../' + data.image}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Позиция изображения</label>
+                    <select class="admin-form-input webinar-block-field"
+                            data-block-index="${index}" data-field="imagePosition">
+                        <option value="left" ${data.imagePosition === 'left' ? 'selected' : ''}>Слева</option>
+                        <option value="right" ${data.imagePosition === 'right' ? 'selected' : ''}>Справа</option>
+                    </select>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Заголовок</label>
+                    <input type="text" class="admin-form-input webinar-block-field"
+                           data-block-index="${index}" data-field="title"
+                           value="${data.title || ''}" placeholder="Заголовок">
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Преимущества (по одному на строку)</label>
+                    <textarea class="admin-form-input webinar-block-field" rows="6"
+                              data-block-index="${index}" data-field="items"
+                              placeholder="Преимущество 1\nПреимущество 2">${featureItems.join('\n')}</textarea>
+                </div>
+            `;
+
+        case 'author':
+            const credentials = data.credentials || [];
+            return `
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Фото автора</label>
+                    <div class="admin-image-upload-container">
+                        <input type="text" class="admin-form-input webinar-block-field"
+                               data-block-index="${index}" data-field="photo"
+                               value="${data.photo || ''}" placeholder="URL изображения">
+                        <div class="admin-image-upload-buttons">
+                            <button type="button" class="admin-btn-secondary" onclick="triggerWebinarBlockImageUpload(${index}, 'photo')">
+                                📁 Загрузить
+                            </button>
+                            <button type="button" class="admin-btn-secondary" onclick="pasteWebinarBlockImageFromClipboard(${index}, 'photo')">
+                                📋 Вставить
+                            </button>
+                        </div>
+                        <input type="file" id="webinarBlockImageUpload_${index}_photo" accept="image/*" style="display: none;" onchange="handleWebinarBlockImageUpload(event, ${index}, 'photo')">
+                    </div>
+                    ${data.photo ? `<div class="admin-image-preview"><img src="${data.photo.startsWith('http') ? data.photo : '../../' + data.photo}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;"></div>` : ''}
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Имя автора</label>
+                    <input type="text" class="admin-form-input webinar-block-field"
+                           data-block-index="${index}" data-field="name"
+                           value="${data.name || ''}" placeholder="Имя автора">
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Регалии/Достижения (по одному на строку)</label>
+                    <textarea class="admin-form-input webinar-block-field" rows="6"
+                              data-block-index="${index}" data-field="credentials"
+                              placeholder="Регалия 1\nРегалия 2">${credentials.join('\n')}</textarea>
+                </div>
+            `;
+
+        default:
+            return '<p>Неизвестный тип блока</p>';
+    }
+}
+
+// Attach listeners to update blocks data
+function attachWebinarBlockFieldListeners() {
+    // Regular block fields
+    document.querySelectorAll('.webinar-block-field').forEach(field => {
+        field.addEventListener('input', function() {
+            const blockIndex = parseInt(this.dataset.blockIndex);
+            const fieldName = this.dataset.field;
+            const blocks = window.currentWebinarBlocks || [];
+
+            if (!blocks[blockIndex].data) {
+                blocks[blockIndex].data = {};
+            }
+
+            // Handle array fields (items, credentials)
+            if (fieldName === 'items' || fieldName === 'credentials') {
+                blocks[blockIndex].data[fieldName] = this.value.split('\n').filter(item => item.trim());
+            }
+            // Handle number fields
+            else if (fieldName === 'price') {
+                blocks[blockIndex].data[fieldName] = parseInt(this.value) || 0;
+            }
+            // Handle regular fields
+            else {
+                blocks[blockIndex].data[fieldName] = this.value;
+            }
+
+            window.currentWebinarBlocks = blocks;
+        });
+    });
+
+    // Drag and drop functionality
+    attachWebinarBlockDragAndDrop();
+}
+
+// Drag and drop for webinar blocks
+function attachWebinarBlockDragAndDrop() {
+    const dragHandles = document.querySelectorAll('.admin-block-drag-handle');
+    let draggedElement = null;
+    let draggedIndex = null;
+
+    dragHandles.forEach((handle) => {
+        const blockItem = handle.closest('.admin-block-item');
+
+        handle.addEventListener('dragstart', function(e) {
+            draggedElement = blockItem;
+            draggedIndex = parseInt(blockItem.dataset.blockIndex);
+            blockItem.style.opacity = '0.5';
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', blockItem.innerHTML);
+        });
+
+        handle.addEventListener('dragend', function(e) {
+            blockItem.style.opacity = '1';
+            document.querySelectorAll('.admin-block-item').forEach(el => {
+                el.classList.remove('drag-over');
+            });
+        });
+    });
+
+    const blockItems = document.querySelectorAll('.admin-block-item');
+    blockItems.forEach((item) => {
+        item.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (this !== draggedElement) {
+                this.classList.add('drag-over');
+            }
+            return false;
+        });
+
+        item.addEventListener('dragenter', function(e) {
+            if (this !== draggedElement) {
+                this.classList.add('drag-over');
+            }
+        });
+
+        item.addEventListener('dragleave', function(e) {
+            this.classList.remove('drag-over');
+        });
+
+        item.addEventListener('drop', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            if (this !== draggedElement && draggedElement) {
+                const dropIndex = parseInt(this.dataset.blockIndex);
+                const blocks = window.currentWebinarBlocks || [];
+
+                const [movedBlock] = blocks.splice(draggedIndex, 1);
+                blocks.splice(dropIndex, 0, movedBlock);
+
+                window.currentWebinarBlocks = blocks;
+                renderWebinarBlocks();
+            }
+
+            this.classList.remove('drag-over');
+            return false;
+        });
+    });
+}
+
+// Webinar block management functions
+window.toggleWebinarBlock = function(index) {
+    const body = document.getElementById(`webinarBlockBody${index}`);
+    const btn = body.previousElementSibling.querySelector('.toggle-icon');
+    if (body.style.display === 'none') {
+        body.style.display = 'block';
+        btn.textContent = '▼';
+    } else {
+        body.style.display = 'none';
+        btn.textContent = '▶';
+    }
+};
+
+window.deleteWebinarBlock = function(index) {
+    const blocks = window.currentWebinarBlocks || [];
+    blocks.splice(index, 1);
+    window.currentWebinarBlocks = blocks;
+    renderWebinarBlocks();
+};
+
+window.moveWebinarBlockUp = function(index) {
+    if (index === 0) return;
+    const blocks = window.currentWebinarBlocks || [];
+    [blocks[index - 1], blocks[index]] = [blocks[index], blocks[index - 1]];
+    window.currentWebinarBlocks = blocks;
+    renderWebinarBlocks();
+};
+
+window.moveWebinarBlockDown = function(index) {
+    const blocks = window.currentWebinarBlocks || [];
+    if (index >= blocks.length - 1) return;
+    [blocks[index], blocks[index + 1]] = [blocks[index + 1], blocks[index]];
+    window.currentWebinarBlocks = blocks;
+    renderWebinarBlocks();
+};
+
+window.addWebinarBlock = function(type) {
+    const blocks = window.currentWebinarBlocks || [];
+    const newBlock = {
+        type: type,
+        data: getDefaultWebinarBlockData(type)
+    };
+    blocks.push(newBlock);
+    window.currentWebinarBlocks = blocks;
+    renderWebinarBlocks();
+
+    // Scroll to new block
+    setTimeout(() => {
+        const newBlockEl = document.querySelector(`[data-block-index="${blocks.length - 1}"]`);
+        if (newBlockEl) {
+            newBlockEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, 100);
+};
+
+// Get default block data for webinars
+function getDefaultWebinarBlockData(type) {
+    switch (type) {
+        case 'hero':
+            return { image: '', title: '', price: 0, startDate: '', paymentInstructions: '' };
+        case 'description':
+            return { image: '', title: '', subtitle: '', contentType: '' };
+        case 'program':
+            return { title: 'Программа вебинара', items: [] };
+        case 'features':
+            return { image: '', imagePosition: 'right', title: '', items: [] };
+        case 'author':
+            return { photo: '', name: '', credentials: [] };
+        default:
+            return {};
+    }
+}
+
+// Get webinar blocks data for saving
+window.getWebinarBlocksData = function() {
+    return window.currentWebinarBlocks || [];
+};
+
+// Image upload functions for webinar blocks
+window.triggerWebinarBlockImageUpload = function(blockIndex, fieldName) {
+    const fileInput = document.getElementById(`webinarBlockImageUpload_${blockIndex}_${fieldName}`);
+    if (fileInput) {
+        fileInput.click();
+    }
+};
+
+window.handleWebinarBlockImageUpload = async function(event, blockIndex, fieldName) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        alert('Пожалуйста, выберите файл изображения');
+        return;
+    }
+
+    try {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await fetch('http://localhost:3001/api/upload/image', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Ошибка загрузки изображения');
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error || 'Ошибка загрузки');
+        }
+
+        // Update block data
+        const blocks = window.currentWebinarBlocks || [];
+        if (!blocks[blockIndex].data) {
+            blocks[blockIndex].data = {};
+        }
+        blocks[blockIndex].data[fieldName] = data.data.path;
+        window.currentWebinarBlocks = blocks;
+
+        // Update the input field directly instead of re-rendering everything
+        const inputField = document.querySelector(`input[data-block-index="${blockIndex}"][data-field="${fieldName}"]`);
+        if (inputField) {
+            inputField.value = data.data.path;
+
+            // Add or update preview image
+            const container = inputField.closest('.admin-form-group');
+            let preview = container.querySelector('.admin-image-preview');
+            if (!preview) {
+                preview = document.createElement('div');
+                preview.className = 'admin-image-preview';
+                container.appendChild(preview);
+            }
+            const imagePath = data.data.path.startsWith('http') ? data.data.path : '../../' + data.data.path;
+            preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
+        }
+
+        // Show success message
+        showNotification('Изображение успешно загружено', 'success');
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        alert('Ошибка при загрузке изображения: ' + error.message);
+    }
+
+    // Reset file input
+    event.target.value = '';
+};
+
+window.pasteWebinarBlockImageFromClipboard = async function(blockIndex, fieldName) {
+    try {
+        const clipboardItems = await navigator.clipboard.read();
+
+        for (const item of clipboardItems) {
+            const imageType = item.types.find(type => type.startsWith('image/'));
+
+            if (imageType) {
+                const blob = await item.getType(imageType);
+
+                const formData = new FormData();
+                formData.append('image', blob, 'clipboard-image.png');
+
+                const response = await fetch('http://localhost:3001/api/upload/image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки изображения');
+                }
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Ошибка загрузки');
+                }
+
+                // Update block data
+                const blocks = window.currentWebinarBlocks || [];
+                if (!blocks[blockIndex].data) {
+                    blocks[blockIndex].data = {};
+                }
+                blocks[blockIndex].data[fieldName] = data.data.path;
+                window.currentWebinarBlocks = blocks;
+
+                // Update the input field directly instead of re-rendering everything
+                const inputField = document.querySelector(`input[data-block-index="${blockIndex}"][data-field="${fieldName}"]`);
+                if (inputField) {
+                    inputField.value = data.data.path;
+
+                    // Add or update preview image
+                    const container = inputField.closest('.admin-form-group');
+                    let preview = container.querySelector('.admin-image-preview');
+                    if (!preview) {
+                        preview = document.createElement('div');
+                        preview.className = 'admin-image-preview';
+                        container.appendChild(preview);
+                    }
+                    const imagePath = data.data.path.startsWith('http') ? data.data.path : '../../' + data.data.path;
+                    preview.innerHTML = `<img src="${imagePath}" alt="Preview" style="max-width: 200px; max-height: 150px; margin-top: 10px; border-radius: 8px;">`;
+                }
+
+                // Show success message
+                showNotification('Изображение успешно вставлено из буфера обмена', 'success');
+                return;
+            }
+        }
+
+        alert('В буфере обмена нет изображения');
+    } catch (error) {
+        console.error('Error pasting image:', error);
+        alert('Ошибка при вставке изображения: ' + error.message);
     }
 };
 

@@ -155,12 +155,13 @@ function populateSupervisionPopup(supervision) {
     // Store supervision data for request
     window.currentSupervision = supervision;
     
-    // Payment button - open request form
+    // Payment button - open request form using the standard consultation form
     const payButton = document.getElementById('popupPayButton');
     payButton.textContent = 'Записаться на супервизию';
     payButton.onclick = () => {
         closeSupervisionPopup();
-        openSupervisionRequestForm(supervision);
+        // Use the standard consultation form with supervision type
+        openConsultationPopup('supervision');
     };
 }
 

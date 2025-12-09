@@ -154,6 +154,26 @@ body.admin-panel-page {
     background: var(--color-danger);
 }
 
+.admin-change-password-link {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--color-white);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 15px;
+}
+
+.admin-change-password-link:hover {
+    background: var(--color-accent);
+}
+
 /* Main Content */
 .admin-main {
     flex: 1;

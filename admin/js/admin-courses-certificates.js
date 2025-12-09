@@ -15,7 +15,7 @@ window.loadCourses = async function() {
     let courses = [];
     try {
         console.log('Loading courses from API...');
-        const response = await fetch('http://localhost:3001/api/courses');
+        const response = await fetch('http://localhost:3001/api/courses?type=course');
         const data = await response.json();
         console.log('Courses API response:', data);
         if (data.success) {
@@ -665,7 +665,8 @@ window.saveCourse = async function(courseId) {
         topics: topics,
         author_name: document.getElementById('courseAuthorName').value,
         author_description: document.getElementById('courseAuthorDescription').value,
-        page_blocks: JSON.stringify(getCourseBlocksData())
+        page_blocks: JSON.stringify(getCourseBlocksData()),
+        type: 'course'
     };
     
     try {

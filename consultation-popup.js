@@ -135,5 +135,12 @@ class ConsultationPopup {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    new ConsultationPopup();
+    window.consultationPopup = new ConsultationPopup();
 });
+
+// Global function for header button and other pages
+window.openConsultationPopup = function(type = 'consultation') {
+    if (window.consultationPopup && typeof window.consultationPopup.open === 'function') {
+        window.consultationPopup.open(type);
+    }
+};

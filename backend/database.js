@@ -155,6 +155,94 @@ async function initDatabase() {
         console.log('ℹ️  Migration check:', error.message);
     }
 
+    // Check if admin_user table exists
+    const tables = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='admin_user'");
+    if (tables.length === 0) {
+        // Create admin_user table if it doesn't exist
+        db.run(`
+            CREATE TABLE admin_user (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // Add default admin user with a bcrypt hashed password
+        // Default password: admin123 (should be changed in production)
+        const bcrypt = require('bcrypt');
+        const saltRounds = 12;
+        const defaultPassword = 'admin123'; // This should be changed immediately
+
+        // Hash the password with bcrypt
+        const defaultHash = bcrypt.hashSync(defaultPassword, saltRounds);
+
+        // Insert default admin user (no need for separate salt with bcrypt)
+        db.run(`INSERT OR IGNORE INTO admin_user (username, password_hash) VALUES ('admin', ?)`, [defaultHash]);
+    } else {
+        // Check if admin_user table has the old 'salt' column and migrate if necessary
+        const tableInfo = db.exec("PRAGMA table_info(admin_user)");
+        const hasSaltColumn = tableInfo[0]?.values.some(col => col[1] === 'salt');  // Column name is in index 1
+
+        if (hasSaltColumn) {
+            // Backup old table data
+            const oldUsers = db.exec("SELECT username, password_hash, salt FROM admin_user");
+
+            if (oldUsers.length > 0) {
+                // Rename old table
+                db.run("ALTER TABLE admin_user RENAME TO admin_user_old;");
+
+                // Create new table without salt column
+                db.run(`
+                    CREATE TABLE admin_user (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        username TEXT UNIQUE NOT NULL,
+                        password_hash TEXT NOT NULL,
+                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                    );
+                `);
+
+                // Migrate users with bcrypt hashing
+                const bcrypt = require('bcrypt');
+
+                for (const row of oldUsers[0].values) {
+                    const username = row[0];  // username
+                    const old_hash = row[1];  // password_hash
+                    const salt = row[2];      // salt
+
+                    // Since we can't reconstruct the original password from the old hash,
+                    // we'll set a temporary default password and force user to change it
+                    // In a real scenario, we would have the original password to re-hash
+                    // For this migration, let's use a placeholder and require password change
+                    const tempPassword = 'TempPass123'; // Temporary password to force change
+                    const newHash = bcrypt.hashSync(tempPassword, 12);
+
+                    db.run(`INSERT INTO admin_user (username, password_hash) VALUES (?, ?)`, [username, newHash]);
+                }
+            }
+        }
+    }
+
+    // Check if auth_logs table exists
+    const authLogTables = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='auth_logs'");
+    if (authLogTables.length === 0) {
+        // Create auth_logs table if it doesn't exist
+        db.run(`
+            CREATE TABLE auth_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT,
+                ip_address TEXT,
+                user_agent TEXT,
+                action TEXT NOT NULL,  -- 'login_attempt', 'login_success', 'login_failure', 'password_change'
+                result TEXT,           -- 'success', 'failure', 'blocked'
+                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                details TEXT
+            );
+        `);
+    }
+
     // Initialize default settings
     const existingSettings = db.exec('SELECT COUNT(*) as count FROM settings');
     if (!existingSettings.length || existingSettings[0].values[0][0] === 0) {

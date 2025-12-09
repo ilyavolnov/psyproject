@@ -19,7 +19,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const btn = e.target.closest('.profile-pay-btn');
             currentPrice = parseInt(btn.getAttribute('data-price'));
             currentSpecialist = btn.getAttribute('data-specialist');
-            
+
+            document.getElementById('paymentPopupPrice').textContent = formatPrice(currentPrice);
+            openPopup();
+        }
+    });
+
+    // Open booking popup
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.profile-booking-btn')) {
+            const btn = e.target.closest('.profile-booking-btn');
+            currentPrice = parseInt(btn.getAttribute('data-price'));
+            currentSpecialist = btn.getAttribute('data-specialist');
+
             document.getElementById('paymentPopupPrice').textContent = formatPrice(currentPrice);
             openPopup();
         }
@@ -189,11 +201,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (result.success) {
                     // Show success message
-                    alert(`✅ Заявка создана! Переход к оплате консультации с ${currentSpecialist} на сумму ${formatPrice(currentPrice)}`);
-                    
+                    alert(`✅ Заявка создана! Мы свяжемся с вами для записи на консультацию с ${currentSpecialist} на сумму ${formatPrice(currentPrice)}`);
+
                     // In production, redirect to payment:
                     // window.location.href = 'https://your-payment-system.com/pay?amount=' + currentPrice;
-                    
+
                     closePopup();
                 } else {
                     throw new Error(result.error || 'Ошибка создания заявки');
@@ -213,14 +225,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return new Intl.NumberFormat('ru-RU').format(price) + ' ₽';
     }
 
-    // Schedule button handler
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.profile-schedule-btn')) {
-            // Open schedule or redirect to booking
-            alert('Расписание и запись будут добавлены позже');
-            // You can implement a schedule popup or redirect to booking system
-        }
-    });
 
     // Review button handler
     document.addEventListener('click', function(e) {

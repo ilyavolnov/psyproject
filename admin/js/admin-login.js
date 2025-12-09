@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const hashedPassword = await hashPassword(password);
 
         // Validate credentials
-        if (await validateCredentials(username, hashedPassword)) {
+        if (await validateCredentials(username, password)) {
             // Reset failed attempts
             resetFailedAttempts();
             
@@ -78,23 +78,31 @@ document.addEventListener('DOMContentLoaded', function() {
         return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
     }
 
-    async function validateCredentials(username, hashedPassword) {
-        // IMPORTANT: These are SHA-256 hashes of passwords
-        // To generate new hash: await hashPassword('your_password')
-        
-        // Stored hashed credentials
-        // Original passwords (DO NOT STORE IN PRODUCTION):
-        // admin: SecureAdmin2024!@#
-        // margarita: Rumyantseva_Secure_2024_Key!
-        
-        const validCredentials = {
-            'admin': '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918' // SHA-256 of 'admin'
-        };
+    async function validateCredentials(username, password) {
+        // Send plain password to server for authentication
+        try {
+            const API_URL = window.location.hostname === 'localhost'
+                ? 'http://localhost:3001/api'
+                : '/api';
 
-        // Add timing attack protection
-        await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
+            const response = await fetch(`${API_URL}/admin/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
 
-        return validCredentials[username] === hashedPassword;
+            const result = await response.json();
+
+            // Add timing attack protection
+            await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
+
+            return result.success;
+        } catch (error) {
+            console.error('Error validating credentials:', error);
+            return false;
+        }
     }
 
     // Brute force protection functions

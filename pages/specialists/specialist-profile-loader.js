@@ -133,11 +133,8 @@ class SpecialistProfile {
                         </div>` : ''}
                     </div>
                     <div class="profile-actions">
-                        <button class="profile-cta-btn profile-pay-btn" ${buttonDisabled} data-price="${spec.price}" data-specialist="${spec.name}">
-                            <span>Оплатить</span>
-                        </button>
-                        <button class="profile-cta-btn profile-schedule-btn">
-                            <span>Расписание</span>
+                        <button class="profile-cta-btn profile-booking-btn" ${buttonDisabled} data-price="${spec.price}" data-specialist="${spec.name}">
+                            <span>Записаться</span>
                         </button>
                     </div>
                     <button class="profile-review-btn-secondary">
@@ -147,11 +144,7 @@ class SpecialistProfile {
             </div>
 
             <div class="profile-details">
-                <div class="profile-block">
-                    <h3 class="profile-block-title">О специалисте</h3>
-                    <p class="profile-description">${description}</p>
-                </div>
-
+                ${this.renderSpecialistDescriptionBlock()}
                 ${this.renderPageBlocks()}
             </div>
         `;
@@ -224,7 +217,29 @@ class SpecialistProfile {
         
         return blocks.join('');
     }
-    
+
+    renderSpecialistDescriptionBlock() {
+        const spec = this.specialist;
+        const description = spec.description || 'Описание специалиста будет добавлено позже.';
+
+        // Check if 'about' block already exists in page_blocks to avoid duplication
+        const hasAboutBlock = spec.page_blocks && spec.page_blocks.some(block =>
+            block && block.type && (block.type === 'about' || block.type === 'text')
+        );
+
+        // Only render the static description block if there's no about/text block in page_blocks
+        if (!hasAboutBlock) {
+            return `
+                <div class="profile-block">
+                    <h3 class="profile-block-title">О специалисте</h3>
+                    <p class="profile-description">${description}</p>
+                </div>
+            `;
+        }
+
+        return ''; // Don't render static block if dynamic block exists
+    }
+
     renderBlock(block) {
         switch(block.type) {
             case 'text':

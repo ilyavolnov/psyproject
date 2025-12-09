@@ -109,31 +109,50 @@ function initCourseHoverEffect() {
 
     if (courseItems.length > 0 && hoverCard && hoverImageElement && hoverDescription) {
         courseItems.forEach(item => {
-            item.addEventListener('mouseenter', (e) => {
-                const imageUrl = item.getAttribute('data-image');
-                const description = item.getAttribute('data-description');
+            // Remove existing event listeners if any
+            item.removeEventListener('mouseenter', handleCourseMouseEnter);
+            item.removeEventListener('mousemove', handleCourseMouseMove);
+            item.removeEventListener('mouseleave', handleCourseMouseLeave);
 
-                if (imageUrl && description) {
-                    hoverImageElement.src = imageUrl;
-                    hoverDescription.textContent = description;
-                    hoverCard.classList.add('active');
-                }
-            });
-
-            item.addEventListener('mousemove', (e) => {
-                if (hoverCard.classList.contains('active')) {
-                    const offsetX = 30;
-                    const offsetY = -hoverCard.offsetHeight / 2;
-
-                    hoverCard.style.left = (e.clientX + offsetX) + 'px';
-                    hoverCard.style.top = (e.clientY + offsetY) + 'px';
-                }
-            });
-
-            item.addEventListener('mouseleave', () => {
-                hoverCard.classList.remove('active');
-            });
+            // Add event listeners
+            item.addEventListener('mouseenter', handleCourseMouseEnter);
+            item.addEventListener('mousemove', handleCourseMouseMove);
+            item.addEventListener('mouseleave', handleCourseMouseLeave);
         });
+    }
+}
+
+// Separate functions for event handling to allow proper removal
+function handleCourseMouseEnter(e) {
+    const item = e.currentTarget;
+    const imageUrl = item.getAttribute('data-image');
+    const description = item.getAttribute('data-description');
+    const hoverCard = document.querySelector('.course-hover-card');
+    const hoverImageElement = hoverCard ? hoverCard.querySelector('img') : null;
+    const hoverDescription = hoverCard ? hoverCard.querySelector('.course-hover-description') : null;
+
+    if (imageUrl && description && hoverCard && hoverImageElement && hoverDescription) {
+        hoverImageElement.src = imageUrl;
+        hoverDescription.textContent = description;
+        hoverCard.classList.add('active');
+    }
+}
+
+function handleCourseMouseMove(e) {
+    const hoverCard = document.querySelector('.course-hover-card');
+    if (hoverCard && hoverCard.classList.contains('active')) {
+        const offsetX = 30;
+        const offsetY = -hoverCard.offsetHeight / 2;
+
+        hoverCard.style.left = (e.clientX + offsetX) + 'px';
+        hoverCard.style.top = (e.clientY + offsetY) + 'px';
+    }
+}
+
+function handleCourseMouseLeave(e) {
+    const hoverCard = document.querySelector('.course-hover-card');
+    if (hoverCard) {
+        hoverCard.classList.remove('active');
     }
 }
 
@@ -588,16 +607,32 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
 }
 
 
-// Course items click handler
-document.querySelectorAll('.course-item[data-course-id]').forEach(item => {
-    item.style.cursor = 'pointer';
-    item.addEventListener('click', function() {
-        const courseId = this.dataset.courseId;
+// Course items click handler using event delegation for dynamic content
+document.addEventListener('click', function(e) {
+    // Find if the click was on or within a course-item element
+    const courseItem = e.target.closest('.course-item[data-course-id]');
+    if (courseItem) {
+        const courseId = courseItem.dataset.courseId;
         if (courseId) {
-            window.location.href = `course-page.html?id=${courseId}`;
+            // Determine if it's a course or webinar to build appropriate URL
+            const courseUrl = `course-page.html?id=${courseId}`;
+            window.location.href = courseUrl;
         }
-    });
+    }
 });
+
+// Also update cursor style for all course items using CSS would be better,
+// but if we need to ensure it's applied to dynamically added elements:
+function updateCourseItemCursor() {
+    const courseItems = document.querySelectorAll('.course-item[data-course-id]:not(.cursor-set)');
+    courseItems.forEach(item => {
+        item.style.cursor = 'pointer';
+        item.classList.add('cursor-set'); // Mark as processed
+    });
+}
+
+// Run initially and after courses are loaded
+updateCourseItemCursor();
 
 
 // Contact form submission

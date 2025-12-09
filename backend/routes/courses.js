@@ -181,7 +181,13 @@ router.post('/courses', async (req, res) => {
 router.put('/courses/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const updates = req.body;
+        let updates = { ...req.body }; // Make a copy to modify
+
+        // Check if title was updated but slug was not provided
+        // Regenerate slug in this case
+        if (updates.title && updates.slug === undefined) {
+            updates.slug = generateSlug(updates.title);
+        }
 
         const fields = [];
         const values = [];
