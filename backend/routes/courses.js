@@ -128,7 +128,7 @@ router.post('/courses', async (req, res) => {
             title, subtitle, description, price, status, image,
             release_date, access_duration, feedback_duration,
             has_certificate, whatsapp_number, topics, bonuses,
-            materials, author_name, author_description, page_blocks, type
+            materials, author_name, author_description, page_blocks, type, start_date
         } = req.body;
 
         if (!title) {
@@ -172,7 +172,7 @@ router.post('/courses', async (req, res) => {
         console.error('Error creating course:', error);
         res.status(500).json({
             success: false,
-            error: 'Failed to create course'
+            error: error.message || 'Failed to create course'
         });
     }
 });
