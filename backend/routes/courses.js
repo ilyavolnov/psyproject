@@ -154,7 +154,7 @@ router.post('/courses', async (req, res) => {
             release_date, access_duration, feedback_duration,
             has_certificate ? 1 : 0, whatsapp_number,
             topics ? JSON.stringify(topics) : '[]',
-            bonuses, materials, author_name, author_description,
+            bonuses || null, materials || null, author_name, author_description,
             page_blocks || '[]',
             type || 'course',
             slug,

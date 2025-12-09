@@ -660,6 +660,8 @@ window.saveCourse = async function(courseId) {
         feedback_duration: document.getElementById('courseFeedbackDuration').value,
         has_certificate: document.getElementById('courseHasCertificate').checked,
         whatsapp_number: document.getElementById('courseWhatsapp').value,
+        bonuses: null, // Поле может быть добавлено позже если понадобится
+        materials: null, // Поле может быть добавлено позже если понадобится
         topics: topics,
         author_name: document.getElementById('courseAuthorName').value,
         author_description: document.getElementById('courseAuthorDescription').value,
