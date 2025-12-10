@@ -80,6 +80,27 @@ async function addWebinar() {
             }
         ];
 
+        // Function to generate slug
+        function generateSlug(title) {
+            const translitMap = {
+                'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
+                'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+                'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts',
+                'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+            };
+
+            return title
+                .toLowerCase()
+                .split('')
+                .map(char => translitMap[char] || char)
+                .join('')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+        }
+
+        const title = 'Проект «Новогоднее чудо»';
+        const slug = generateSlug(title);
+
         // Insert new webinar
         const query = `
             INSERT INTO courses (
@@ -87,12 +108,12 @@ async function addWebinar() {
                 access_duration, feedback_duration,
                 has_certificate, whatsapp_number, topics,
                 author_name, author_description, page_blocks,
-                created_at, updated_at, type
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'), ?)
+                created_at, updated_at, type, slug
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'), ?, ?)
         `;
 
         db.run(query, [
-            'Проект «Новогоднее чудо»',
+            title,
             'Как приблизить жизнь мечты в 2026 году?',
             'IFS-сессия для работы с частью личности, которая хранит в себе лучший сценарий вашей жизни. Новогодняя рабочая тетрадь для построение эффективного плана. Начните 2026 года с разрешения МЕЧТАТЬ, строить смелые цели и эффективно к ним двигаться.',
             3900,
@@ -112,7 +133,8 @@ async function addWebinar() {
             'Маргарита Румянцева',
             'Врач-психиатр, психотерапевт, сексолог с 10-летним опытом работы, EMDR-терапевт с аккредитацией в Европе, IFS-терапевт',
             JSON.stringify(blocks),
-            'webinar' // тип - вебинар
+            'webinar', // тип - вебинар
+            slug
         ]);
 
         // Save database

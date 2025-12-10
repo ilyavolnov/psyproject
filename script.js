@@ -24,26 +24,29 @@ document.querySelectorAll('.hero-cta-button').forEach(button => {
     });
 });
 
-// Other CTA buttons scroll to contact form
+// Other CTA buttons scroll to contact form, but header button opens popup
 document.querySelectorAll('.cta-button').forEach(button => {
-    button.addEventListener('click', function (e) {
-        e.preventDefault();
-        const contactForm = document.getElementById('contact-form');
-        if (contactForm) {
-            contactForm.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-            
-            // Focus on first input after scroll
-            setTimeout(() => {
-                const firstInput = contactForm.querySelector('input[type="text"]');
-                if (firstInput) {
-                    firstInput.focus();
-                }
-            }, 800);
-        }
-    });
+    // Don't apply scroll behavior to header button since it has onclick handler for popup
+    if (!button.hasAttribute('onclick')) {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+                // Focus on first input after scroll
+                setTimeout(() => {
+                    const firstInput = contactForm.querySelector('input[type="text"]');
+                    if (firstInput) {
+                        firstInput.focus();
+                    }
+                }, 800);
+            }
+        });
+    }
 });
 
 // Header scroll effect
@@ -498,87 +501,6 @@ if (testimonialsCarousel && prevBtn && nextBtn) {
 }
 
 
-// Contact form submission
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        // Get form data
-        const formData = new FormData(contactForm);
-        const data = Object.fromEntries(formData);
-
-        // Here you would normally send data to your backend
-        console.log('Form submitted:', data);
-
-        // Show success message
-        alert('Спасибо за вашу заявку! Мы свяжемся с вами в ближайшее время.');
-
-        // Reset form
-        contactForm.reset();
-    });
-}
-
-
-// Parallax effect for form clouds
-const formCloud = document.querySelector('.form-cloud');
-const formCloudBg = document.querySelector('.form-cloud-bg');
-
-if (formCloud && typeof gsap !== 'undefined') {
-    gsap.to(formCloud, {
-        scrollTrigger: {
-            trigger: '.contact-section',
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 2
-        },
-        y: -120,
-        ease: 'none'
-    });
-}
-
-if (formCloudBg && typeof gsap !== 'undefined') {
-    gsap.to(formCloudBg, {
-        scrollTrigger: {
-            trigger: '.contact-section',
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.5
-        },
-        y: -100,
-        ease: 'none'
-    });
-}
-
-// Parallax effect for form leaf
-const formLeaf = document.querySelector('.form-leaf');
-if (formLeaf && typeof gsap !== 'undefined') {
-    gsap.to(formLeaf, {
-        scrollTrigger: {
-            trigger: '.contact-section',
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 2.5
-        },
-        y: -110,
-        ease: 'none'
-    });
-}
-
-// Parallax effect for form heart
-const formHeart = document.querySelector('.form-heart');
-if (formHeart && typeof gsap !== 'undefined') {
-    gsap.to(formHeart, {
-        scrollTrigger: {
-            trigger: '.contact-section',
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.8
-        },
-        y: -90,
-        ease: 'none'
-    });
-}
 
 
 // Parallax background images for courses/webinars sections

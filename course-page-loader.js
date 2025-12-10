@@ -26,16 +26,20 @@ async function loadCourse(identifier) {
         const data = await response.json();
         
         // If slug not found, try by ID
-        if (!data.success && identifier && identifier !== 'null' && identifier !== 'undefined' && !isNaN(identifier)) {
-            const idResponse = await fetch(`http://localhost:3001/api/courses/${identifier}`);
-            const idData = await idResponse.json();
+        if (!data.success && identifier && identifier !== 'null' && identifier !== 'undefined') {
+            // Check if identifier is a number to determine if it's an ID
+            const identifierAsNumber = parseInt(identifier, 10);
+            if (!isNaN(identifierAsNumber)) {
+                const idResponse = await fetch(`http://localhost:3001/api/courses/${identifierAsNumber}`);
+                const idData = await idResponse.json();
 
-            if (idData.success && idData.data) {
-                const course = idData.data;
-                document.title = `${course.title} - Маргарита Румянцева`;
-                const blocks = JSON.parse(course.page_blocks || '[]');
-                renderCourse(course, blocks);
-                return;
+                if (idData.success && idData.data) {
+                    const course = idData.data;
+                    document.title = `${course.title} - Маргарита Румянцева`;
+                    const blocks = JSON.parse(course.page_blocks || '[]');
+                    renderCourse(course, blocks);
+                    return;
+                }
             }
         }
 
@@ -140,7 +144,7 @@ function renderHeroBlock(data, course) {
                         ${data.startDate ? `<span class="course-hero-date">СТАРТ ${data.startDate}</span>` : ''}
                     </div>
                     <div class="course-hero-buttons">
-                        <button class="course-hero-button" onclick="openPaymentInfo('${course.whatsapp_number}')">
+                        <button class="course-hero-button" onclick="openCourseRegistration('${course.title}', '${course.price}', '${course.type || 'course'}', ${course.id || 0})">
                             Записаться
                         </button>
                     </div>
@@ -374,7 +378,7 @@ window.openCourseOrder = function(course) {
                 <div class="order-agreements">
                     <label class="order-checkbox-label">
                         <input type="checkbox" class="order-checkbox" id="orderPrivacy" required>
-                        <span>Я ознакомлен(а) и согласен(а) с <a href="#" target="_blank">Политикой конфиденциальности</a></span>
+                        <span>Я ознакомлен(а) и согласен(а) с <a href="../privacy-policy.html" target="_blank">Политикой конфиденциальности</a></span>
                     </label>
                     <label class="order-checkbox-label">
                         <input type="checkbox" class="order-checkbox" id="orderConsent" required>
@@ -474,8 +478,17 @@ window.submitCourseOrder = async function(course) {
     }
 };
 
-// Close order popup
+// Close order popup - universal function that works with different popup types
 window.closeOrderPopup = function() {
+    // Try to close the active popup by looking for the currently displayed popup
+    const activePopup = document.querySelector('.order-popup.active, #orderPopup, #courseRegistrationPopup, #orderPopup');
+    if (activePopup) {
+        activePopup.remove();
+        document.body.style.overflow = '';
+        return;
+    }
+
+    // Fallback to specific IDs if needed
     const popup = document.getElementById('orderPopup');
     if (popup) {
         popup.remove();
@@ -574,3 +587,13 @@ document.addEventListener('keydown', function(e) {
 
 // Call after rendering
 setTimeout(initCountdowns, 100);
+
+// Close popup on ESC key for course registration popup
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const popup = document.querySelector('#courseRegistrationPopup, .order-popup.active');
+        if (popup) {
+            closeOrderPopup();
+        }
+    }
+});

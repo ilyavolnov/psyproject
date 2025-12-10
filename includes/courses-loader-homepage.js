@@ -12,7 +12,7 @@ async function loadHomepageCourses() {
         if (data.success && data.data) {
             // Filter courses (not webinars) and webinars separately
             const allCourses = data.data.filter(item =>
-                (item.type === 'course' || !item.type) &&
+                item.type !== 'webinar' &&  // Exclude webinars from main courses list
                 item.status !== 'completed' // Don't show completed/finished courses in main listing
             );
 
@@ -70,53 +70,11 @@ async function loadHomepageCourses() {
                 }
             }
 
-            // Update the webinars section in the main courses section
+            // Do not load webinars in the main courses section - keep them only in the separate webinars section
             const webinarsList = document.getElementById('webinars-list');
             if (webinarsList) {
-                webinarsList.innerHTML = '';
-
-                if (allWebinars.length > 0) {
-                    // Add dynamic webinars
-                    allWebinars.forEach((webinar, index) => {
-                        const webinarElement = createCourseElement(webinar, index + 1);
-                        webinarsList.appendChild(webinarElement);
-                    });
-                    webinarsList.style.display = 'block'; // Make sure it's visible when there are webinars
-
-                    console.log(`✅ Loaded ${allWebinars.length} webinars in main courses section from API`);
-                } else {
-                    // If no webinars available, show a message
-                    webinarsList.innerHTML = '<div class="no-webinars-message" data-scroll><p>В настоящее время нет доступных вебинаров</p></div>';
-                }
-
-                // Reinitialize hover effects and cursors for new elements
-                initCourseHoverEffect();
-                if (typeof updateCourseItemCursor === 'function') {
-                    updateCourseItemCursor();
-                }
-
-                // Reinitialize GSAP animations for new webinar items if GSAP is available
-                if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-                    // Re-register the scroll trigger for new webinar items
-                    gsap.utils.toArray('.course-item').forEach((item, index) => {
-                        // Check if this item already has an animation
-                        if (!item.classList.contains('gsap-anim-loaded')) {
-                            gsap.from(item, {
-                                scrollTrigger: {
-                                    trigger: item,
-                                    start: 'top bottom-=100',
-                                    toggleActions: 'play none none reverse'
-                                },
-                                opacity: 0,
-                                y: 50,
-                                duration: 0.5,
-                                ease: 'power3.out',
-                                delay: index * 0.02
-                            });
-                            item.classList.add('gsap-anim-loaded');
-                        }
-                    });
-                }
+                webinarsList.innerHTML = '<div class="no-webinars-message" data-scroll><p>Вебинары отображаются в отдельной секции</p></div>';
+                webinarsList.style.display = 'none';
             }
 
             // Update the separate webinars section (webinars-section)
@@ -183,17 +141,11 @@ async function loadHomepageCourses() {
                 webinarsSection.style.display = 'block';
             }
 
-            // Similarly, handle the webinars part of courses section if no webinars
-            if (coursesWebinarsSection && allWebinars.length === 0) {
-                // Find the webinars list inside the courses section and hide if no webinars
-                const coursesWebinarsList = document.querySelector('section[id="courses"] #webinars-list');
-                if (coursesWebinarsList) {
-                    if (allWebinars.length === 0) {
-                        coursesWebinarsList.style.display = 'none';
-                    } else {
-                        coursesWebinarsList.style.display = 'block';
-                    }
-                }
+            // Webinars should not be displayed in the main courses section - only in separate section
+            // So we ensure the webinars list in main courses section remains hidden
+            const coursesWebinarsList = document.querySelector('section[id="courses"] #webinars-list');
+            if (coursesWebinarsList) {
+                coursesWebinarsList.style.display = 'none';
             }
         }
     } catch (error) {
