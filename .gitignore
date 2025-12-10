@@ -5,9 +5,6 @@
 .env.test.local
 .env.production.local
 
-# Database
-database.sqlite
-database.sqlite.backup
 
 # Logs
 *.log

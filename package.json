@@ -1,7 +1,7 @@
 {
   "name": "psyproject",
   "version": "1.0.0",
-  "description": "Сайт психотерапевта с админ-панелью и Telegram ботом",
+  "description": "Сайт психотерапевта с админ-панелью и системой заявок",
   "scripts": {
     "start": "npm run start:all",
     "start:all": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
@@ -9,7 +9,7 @@
     "start:frontend": "python3 -m http.server 8000",
     "install:all": "npm install && cd backend && npm install"
   },
-  "keywords": ["psychotherapy", "website", "admin", "telegram"],
+  "keywords": ["psychotherapy", "website", "admin", "requests"],
   "author": "",
   "license": "MIT",
   "devDependencies": {

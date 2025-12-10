@@ -119,7 +119,6 @@ const validCredentials = {
 
 При обнаружении уязвимостей или вопросах по безопасности:
 - Email: security@example.com
-- Telegram: @security_admin
 
 ---
 

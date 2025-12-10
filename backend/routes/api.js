@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { prepare } = require('../database');
-const { notifyNewApplication } = require('../bot');
 
 // Submit application
 router.post('/applications', (req, res) => {
@@ -27,8 +26,6 @@ router.post('/applications', (req, res) => {
         // Get the created application
         const application = prepare('SELECT * FROM requests WHERE id = ?').get(result.lastInsertRowid);
 
-        // Send Telegram notification
-        notifyNewApplication(application);
 
         res.status(201).json({
             success: true,

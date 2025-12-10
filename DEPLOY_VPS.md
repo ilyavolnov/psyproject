@@ -95,10 +95,6 @@ NODE_ENV=production
 # Database
 DATABASE_PATH=/var/www/psyproject/database.sqlite
 
-# Telegram Bot (опционально)
-TELEGRAM_BOT_TOKEN=your_bot_token
-TELEGRAM_ADMIN_ID=your_admin_id
-TELEGRAM_ENABLED=false
 
 # Security
 ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
@@ -473,13 +469,7 @@ sudo systemctl restart fail2ban
 sudo fail2ban-client status
 ```
 
-## 📱 Шаг 11: Настройка Telegram бота
 
-1. Откройте админ-панель: https://yourdomain.com/admin-login.html
-2. Перейдите в Настройки → Telegram
-3. Следуйте инструкциям на странице
-4. Проверьте подключение
-5. Сохраните настройки
 
 ## ✅ Шаг 12: Проверка работы
 
@@ -502,7 +492,6 @@ sudo fail2ban-client status
 - [ ] Просмотр заявок
 - [ ] Изменение статуса
 - [ ] Промокоды
-- [ ] Telegram уведомления
 
 ## 🐛 Troubleshooting
 
@@ -575,6 +564,5 @@ sudo nginx -t
 
 **Не забудьте:**
 - ✅ Изменить пароль админа
-- ✅ Настроить Telegram бота
 - ✅ Добавить промокоды
 - ✅ Настроить резервное копирование БД

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { prepare, saveDatabase } = require('../database');
-const { restartBot, stopBot } = require('../bot');
 
 // Get all settings
 router.get('/settings', async (req, res) => {
@@ -54,24 +53,6 @@ router.put('/settings', async (req, res) => {
 
         saveDatabase();
 
-        // Restart bot if telegram settings changed
-        if (telegram_enabled !== undefined || telegram_bot_token !== undefined || telegram_admin_id !== undefined) {
-            const enabledSetting = telegram_enabled !== undefined ? telegram_enabled : 
-                (await prepare('SELECT value FROM settings WHERE key = ?').get('telegram_enabled'))?.value === 'true';
-            
-            if (enabledSetting) {
-                const token = telegram_bot_token || 
-                    (await prepare('SELECT value FROM settings WHERE key = ?').get('telegram_bot_token'))?.value;
-                const adminId = telegram_admin_id || 
-                    (await prepare('SELECT value FROM settings WHERE key = ?').get('telegram_admin_id'))?.value;
-                
-                if (token && adminId) {
-                    await restartBot(token, adminId);
-                }
-            } else {
-                stopBot();
-            }
-        }
 
         res.json({
             success: true,
@@ -86,41 +67,5 @@ router.put('/settings', async (req, res) => {
     }
 });
 
-// Test Telegram connection
-router.post('/settings/test-telegram', async (req, res) => {
-    try {
-        const { token, adminId } = req.body;
-
-        if (!token || !adminId) {
-            return res.status(400).json({
-                success: false,
-                error: 'Token and Admin ID are required'
-            });
-        }
-
-        const TelegramBot = require('node-telegram-bot-api');
-        const testBot = new TelegramBot(token, { polling: false });
-
-        try {
-            await testBot.sendMessage(adminId, '✅ Telegram бот успешно подключен!');
-            
-            res.json({
-                success: true,
-                message: 'Telegram connection successful'
-            });
-        } catch (error) {
-            res.status(400).json({
-                success: false,
-                error: 'Failed to send test message: ' + error.message
-            });
-        }
-    } catch (error) {
-        console.error('Error testing Telegram:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to test Telegram connection'
-        });
-    }
-});
 
 module.exports = router;

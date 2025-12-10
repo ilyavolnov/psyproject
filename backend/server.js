@@ -94,10 +94,6 @@ async function startServer() {
         const promoCodesRoutes = require('./routes/promo-codes');
         const uploadRoutes = require('./routes/upload');
         const adminAuthRoutes = require('./routes/admin-auth');
-        const { loadBotFromSettings } = require('./bot');
-
-        // Load bot from database settings
-        loadBotFromSettings();
 
         // Routes
         app.use('/api', apiRoutes);
@@ -134,8 +130,6 @@ async function startServer() {
         // Graceful shutdown
         process.on('SIGINT', () => {
             console.log('\n👋 Shutting down gracefully...');
-            const { stopBot } = require('./bot');
-            stopBot();
             process.exit(0);
         });
     } catch (error) {

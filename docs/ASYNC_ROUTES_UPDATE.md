@@ -37,7 +37,6 @@
 ### 5. backend/routes/settings.js ✅
 - `GET /api/settings` - получение настроек
 - `PUT /api/settings` - обновление настроек
-- `POST /api/settings/test-telegram` - тест Telegram подключения
 
 ## Основные изменения
 

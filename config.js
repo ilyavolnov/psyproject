@@ -6,6 +6,15 @@ const API_CONFIG = {
             return 'http://localhost:3001/api';
         }
         return '/api';
+    },
+
+    // Универсальная функция для получения API URL
+    getApiUrl: function(endpoint) {
+        const baseUrl = this.getBaseURL();
+        if (endpoint) {
+            return baseUrl + '/' + endpoint.replace(/^\/+/, '');
+        }
+        return baseUrl;
     }
 };
 

@@ -2,7 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const { prepare } = require('../database');
-const { notifyNewApplication } = require('../bot');
 
 // Get all requests with filters
 router.get('/requests', async (req, res) => {
@@ -130,15 +129,6 @@ router.post('/requests', async (req, res) => {
         // Get the created request for notification
         const newRequest = await prepare('SELECT * FROM requests WHERE id = ?').get(requestId);
         
-        // Send Telegram notification
-        if (newRequest) {
-            try {
-                notifyNewApplication(newRequest);
-            } catch (error) {
-                console.error('Error sending Telegram notification:', error);
-                // Don't fail the request if notification fails
-            }
-        }
 
         res.status(201).json({
             success: true,

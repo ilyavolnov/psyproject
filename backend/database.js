@@ -246,9 +246,6 @@ async function initDatabase() {
     // Initialize default settings
     const existingSettings = db.exec('SELECT COUNT(*) as count FROM settings');
     if (!existingSettings.length || existingSettings[0].values[0][0] === 0) {
-        db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES ('telegram_enabled', 'false')`);
-        db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES ('telegram_bot_token', '')`);
-        db.run(`INSERT OR IGNORE INTO settings (key, value) VALUES ('telegram_admin_id', '')`);
     }
 
     console.log('✅ Database initialized');
