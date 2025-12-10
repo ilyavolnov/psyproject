@@ -6,7 +6,7 @@ class SpecialistsManager {
         this.itemsPerPage = 9;
         this.container = document.querySelector('.specialists-grid');
         this.loadMoreBtn = document.querySelector('.load-more-btn');
-        
+
         this.init();
     }
 
@@ -22,11 +22,11 @@ class SpecialistsManager {
             try {
                 const apiResponse = await fetch('http://localhost:3001/api/specialists');
                 const apiData = await apiResponse.json();
-                
+
                 if (apiData.success && apiData.data) {
                     console.log('✅ Loaded specialists from API');
                     this.specialists = apiData.data;
-                    
+
                     // Sort by status: available -> waiting -> full
                     const statusOrder = { 'available': 1, 'waiting': 2, 'full': 3 };
                     this.specialists.sort((a, b) => {
@@ -37,11 +37,11 @@ class SpecialistsManager {
             } catch (apiError) {
                 console.log('⚠️ API not available, falling back to JSON file');
             }
-            
+
             // Fallback to JSON file
             const response = await fetch('specialists-data.json');
             const data = await response.json();
-            
+
             // Sort by status: available -> waiting -> full
             const statusOrder = { 'available': 1, 'waiting': 2, 'full': 3 };
             this.specialists = data.specialists.sort((a, b) => {
@@ -74,7 +74,7 @@ class SpecialistsManager {
         // Handle both API format (specialization string) and JSON format (specializations array)
         let specTags = '';
         if (specialist.specializations && Array.isArray(specialist.specializations)) {
-            specTags = specialist.specializations.map(spec => 
+            specTags = specialist.specializations.map(spec =>
                 `<span class="spec-tag">✦ ${spec}</span>`
             ).join('');
         } else if (specialist.specialization) {
@@ -84,10 +84,10 @@ class SpecialistsManager {
         const statusBadge = this.getStatusBadge(specialist.status);
         const buttonText = this.getButtonText(specialist.status);
         const buttonDisabled = specialist.status === 'full' ? 'disabled' : '';
-        
+
         // Use role if available, otherwise use specialization
         const role = specialist.role || specialist.specialization || '';
-        
+
         // Fix photo path - ensure it starts from root
         const photoPath = specialist.photo.startsWith('../../') ? specialist.photo : `../../${specialist.photo}`;
 
@@ -110,7 +110,10 @@ class SpecialistsManager {
                         <p class="specialist-price">${specialist.price} ₽</p>
                         <div class="specialist-actions">
                             <a href="specialist-profile.html?id=${specialist.id}" class="specialist-btn specialist-btn-outline">Подробнее</a>
-                            <button class="specialist-btn specialist-btn-primary" ${buttonDisabled}>${buttonText}</button>
+                            <button class="specialist-btn specialist-btn-primary ${buttonDisabled}"
+                                    ${buttonDisabled}
+                                    data-specialist-name="${specialist.name}"
+                                    data-specialist-role="${specialist.role || specialist.specialization || ''}">${buttonText}</button>
                         </div>
                     </div>
                 </div>
@@ -121,14 +124,14 @@ class SpecialistsManager {
     renderSpecialists() {
         const start = this.displayedCount;
         const end = Math.min(start + this.itemsPerPage, this.specialists.length);
-        
+
         for (let i = start; i < end; i++) {
             const card = this.createSpecialistCard(this.specialists[i]);
             this.container.insertAdjacentHTML('beforeend', card);
         }
-        
+
         this.displayedCount = end;
-        
+
         // Update load more button
         if (this.loadMoreBtn) {
             if (this.displayedCount >= this.specialists.length) {
@@ -138,6 +141,24 @@ class SpecialistsManager {
 
         // Trigger scroll animations
         this.triggerScrollAnimations();
+
+        // Re-attach event listeners to any new specialist buttons
+        this.setupSpecialistButtons();
+    }
+
+    setupSpecialistButtons() {
+        // Attach event listeners to newly added specialist buttons
+        document.querySelectorAll('.specialist-btn-primary:not([disabled]):not([data-listener-added])').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const specialistName = btn.getAttribute('data-specialist-name');
+                const specialistRole = btn.getAttribute('data-specialist-role');
+
+                if (window.consultationPopup && typeof window.consultationPopup.open === 'function') {
+                    window.consultationPopup.open('specialist', { name: specialistName, role: specialistRole });
+                }
+            });
+            btn.setAttribute('data-listener-added', 'true');
+        });
     }
 
     setupLoadMore() {
@@ -151,13 +172,13 @@ class SpecialistsManager {
     triggerScrollAnimations() {
         if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
             const newCards = document.querySelectorAll('.specialist-card:not(.animated)');
-            
+
             newCards.forEach((card, index) => {
                 card.classList.add('animated');
-                
+
                 // Set initial state
                 gsap.set(card, { opacity: 0, y: 50 });
-                
+
                 // Animate
                 gsap.to(card, {
                     scrollTrigger: {
@@ -186,18 +207,18 @@ class SpecialistsManager {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.specialists-grid');
-    
+
     if (grid) {
         new SpecialistsManager();
     }
-    
+
     // Parallax effect for clouds
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         const clouds = document.querySelectorAll('[data-parallax]');
-        
+
         clouds.forEach((cloud) => {
             const section = cloud.closest('section');
-            
+
             if (section) {
                 gsap.fromTo(cloud,
                     {
