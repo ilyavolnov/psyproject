@@ -24,7 +24,7 @@ cp -f src/components/popups/consultation-popup.js . 2>/dev/null || echo "consult
 cp -f src/components/popups/order-popup.js . 2>/dev/null || echo "order-popup.js not found, skipping..."
 
 # Copy page loaders
-cp -f src/utils/loaders/courses-loader.js pages/courses/ 2>/dev/null || echo "courses-loader.js not found, skipping..."
+cp -f src/utils/course-loaders/courses-loader.js pages/courses/ 2>/dev/null || echo "courses-loader.js not found, skipping..."
 cp -f src/utils/loaders/specialists-loader.js pages/specialists/ 2>/dev/null || echo "specialists-loader.js not found, skipping..."
 cp -f src/utils/loaders/supervisions-loader.js pages/supervisions/ 2>/dev/null || echo "supervisions-loader.js not found, skipping..."
 
