@@ -3304,44 +3304,6 @@ pecialists Page */
     overflow: hidden;
 }
 
-/* Decorative clouds for banners */
-.banner-cloud-1 {
-    position: absolute;
-    top: 50px;
-    left: 20px;
-    width: 200px;
-    height: auto;
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0.7;
-    animation: floatCloud 12s ease-in-out infinite;
-}
-
-.banner-cloud-2 {
-    position: absolute;
-    bottom: 15%;
-    right: -60px;
-    width: 250px;
-    height: auto;
-    pointer-events: none;
-    z-index: 5;
-    opacity: 0.5;
-    animation: floatCloud 15s ease-in-out infinite reverse;
-}
-
-/* Cloud on banner card */
-.banner-cloud-on-card {
-    position: absolute;
-    top: -50px;
-    left: 20px;
-    width: 280px;
-    height: auto;
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0.75;
-    animation: floatCloud 10s ease-in-out infinite;
-}
-
 .banners-slider {
     position: relative;
     overflow: visible;
@@ -7625,11 +7587,6 @@ textarea.order-form-input {
         font-size: 14px;
     }
 
-    .banner-cloud-1,
-    .banner-cloud-2,
-    .banner-cloud-on-card {
-        display: none;
-    }
 
     .load-more-btn {
         padding: 12px 30px;
